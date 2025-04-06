@@ -12,7 +12,7 @@ const App = () => {
     minimalApi.createClient({
       links: [
         httpBatchLink({
-          url: "/api/trpc",
+          url: "http://localhost:3000/api/trpc", // Use absolute URL for testing
         }),
       ],
     }),
@@ -32,3 +32,9 @@ const App = () => {
 };
 
 export default App;
+
+function getBaseUrl() {
+  if (typeof window !== "undefined") return window.location.origin;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return `http://localhost:${process.env.PORT ?? 3000}`;
+}

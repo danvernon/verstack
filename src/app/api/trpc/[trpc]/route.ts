@@ -1,5 +1,4 @@
-// src/pages/api/trpc/[trpc].ts
-import { createNextApiHandler } from "@trpc/server/adapters/next";
+import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { z } from "zod";
 import { initTRPC } from "@trpc/server";
 
@@ -22,8 +21,12 @@ const minimalRouter = router({
 // Export type
 export type MinimalRouter = typeof minimalRouter;
 
-// Export API handler
-export default createNextApiHandler({
-  router: minimalRouter,
-  createContext: () => ({}),
-});
+// Export API handler for App Router
+export async function POST(req: Request) {
+  return fetchRequestHandler({
+    endpoint: "/api/trpc",
+    req,
+    router: minimalRouter,
+    createContext: () => ({}),
+  });
+}
