@@ -1,15 +1,11 @@
-import { router, publicProcedure } from "./trpc";
-import { z } from "zod";
+"server-only";
 
-// No DB import here initially for testing
-export const appRouter = router({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
+import { postRouter } from "./routers/post";
+import { createTRPCRouter } from "./trpc";
+
+const appRouter = createTRPCRouter({
+  posts: postRouter,
 });
 
+export default appRouter;
 export type AppRouter = typeof appRouter;

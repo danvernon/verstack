@@ -10,6 +10,7 @@ import { createTRPCClient, httpBatchLink, loggerLink } from "@trpc/client";
 
 import { TRPCProvider, useTRPC } from "@/utils/trpc";
 import { env } from "@/env";
+import SuperJSON from "superjson";
 
 export default function App() {
   const queryClient = getQueryClient();
@@ -22,7 +23,7 @@ export default function App() {
             (op.direction === "down" && op.result instanceof Error),
         }),
         httpBatchLink({
-          // transformer: SuperJSON,
+          transformer: SuperJSON,
           url: getBaseUrl() + "/api/trpc",
           headers: () => {
             const headers = new Headers();
@@ -57,7 +58,7 @@ export default function App() {
 function Dashboard() {
   const trpc = useTRPC();
   const { data, error, isLoading } = useQuery(
-    trpc.hello.queryOptions({ text: "World" }),
+    trpc.posts.getLatest.queryOptions(),
   );
 
   if (isLoading) {
@@ -71,7 +72,7 @@ function Dashboard() {
     <div>
       <h1>Dashboard</h1>
       <Link to="/home">Go to Home</Link>
-      {data && <p>Name: {data.greeting}</p>}
+      {data && <p>Name: {data.name}</p>}
       {/* will either be home.tsx or settings.tsx */}
     </div>
   );
