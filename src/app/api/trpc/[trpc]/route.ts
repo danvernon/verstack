@@ -1,32 +1,35 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { z } from "zod";
-import { initTRPC } from "@trpc/server";
+import { type NextRequest } from "next/server";
 
-// Create a completely standalone tRPC server with no imports
-const t = initTRPC.create();
-const router = t.router;
-const publicProcedure = t.procedure;
+import { env } from "@/env";
 
-// Create a minimal router with no external imports
-const minimalRouter = router({
-  hello: publicProcedure
-    .input(z.object({ text: z.string().optional() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input?.text ?? "world"}`,
-      };
-    }),
-});
+import { createTRPCContext } from "@/server/api/trpc";
+import { appRouter } from "@/server/api/root";
 
-// Export type
-export type MinimalRouter = typeof minimalRouter;
+/**
+ * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
+ * handling a HTTP request (e.g. when you make requests from Client Components).
+ */
+const createContext = async (req: NextRequest) => {
+  return createTRPCContext({
+    headers: req.headers,
+  });
+};
 
-// Export API handler for App Router
-export async function POST(req: Request) {
-  return fetchRequestHandler({
+const handler = (req: NextRequest) =>
+  fetchRequestHandler({
     endpoint: "/api/trpc",
     req,
-    router: minimalRouter,
-    createContext: () => ({}),
+    router: appRouter,
+    createContext: () => createContext(req),
+    onError:
+      env.NODE_ENV === "development"
+        ? ({ path, error }) => {
+            console.error(
+              `❌ tRPC failed on ${path ?? "<no-path>"}: ${error.message}`,
+            );
+          }
+        : undefined,
   });
-}
+
+export { handler as GET, handler as POST };
