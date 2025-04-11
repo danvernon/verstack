@@ -1,4 +1,4 @@
-import { desc, InferSelectModel, relations, sql } from "drizzle-orm";
+import { InferSelectModel, relations, sql } from "drizzle-orm";
 import { index, pgEnum, pgTable } from "drizzle-orm/pg-core";
 
 export const companies = pgTable(
