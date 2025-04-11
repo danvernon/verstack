@@ -1,35 +1,36 @@
 import { Suspense } from "react";
+import { Requisition } from "@/server/db/schema";
 import { api } from "@/trpc/server";
 import { openrouterClient } from "@/utils/open-ai";
 import ReactMarkdown from "react-markdown";
 
 const MarkdownComponents = {
   // Add more spacing between paragraphs
-  p: ({ children }: { children: React.ReactNode }) => (
+  p: ({ children }: { children?: React.ReactNode }) => (
     <p className="mb-6">{children}</p>
   ),
 
   // Add more spacing for headers
-  h1: ({ children }: { children: React.ReactNode }) => (
+  h1: ({ children }: { children?: React.ReactNode }) => (
     <h1 className="mt-8 mb-6 text-3xl font-bold">{children}</h1>
   ),
-  h2: ({ children }: { children: React.ReactNode }) => (
+  h2: ({ children }: { children?: React.ReactNode }) => (
     <h2 className="mt-8 mb-5 text-2xl font-semibold">{children}</h2>
   ),
-  h3: ({ children }: { children: React.ReactNode }) => (
+  h3: ({ children }: { children?: React.ReactNode }) => (
     <h3 className="mt-6 mb-4 text-xl font-semibold">{children}</h3>
   ),
 
   // More spacing for lists
-  ul: ({ children }: { children: React.ReactNode }) => (
+  ul: ({ children }: { children?: React.ReactNode }) => (
     <ul className="mb-6 ml-5 list-disc space-y-3">{children}</ul>
   ),
-  ol: ({ children }: { children: React.ReactNode }) => (
+  ol: ({ children }: { children?: React.ReactNode }) => (
     <ol className="mb-6 ml-5 list-decimal space-y-3">{children}</ol>
   ),
 
   // Add spacing for list items
-  li: ({ children }: { children: React.ReactNode }) => (
+  li: ({ children }: { children?: React.ReactNode }) => (
     <li className="mb-2">{children}</li>
   ),
 
@@ -37,14 +38,14 @@ const MarkdownComponents = {
   hr: () => <hr className="my-8" />,
 
   // Add spacing around blockquotes
-  blockquote: ({ children }: { children: React.ReactNode }) => (
+  blockquote: ({ children }: { children?: React.ReactNode }) => (
     <blockquote className="my-6 border-l-4 border-gray-300 pl-4 italic">
       {children}
     </blockquote>
   ),
 
   // Better styling for strong text
-  strong: ({ children }: { children: React.ReactNode }) => (
+  strong: ({ children }: { children?: React.ReactNode }) => (
     <strong className="text-primary font-bold">{children}</strong>
   ),
 };
@@ -52,15 +53,7 @@ const MarkdownComponents = {
 const GenerateAndSaveJobDescription = async ({
   jobData,
 }: {
-  jobData: {
-    id: string;
-    title: string;
-    level: string;
-    type: string;
-    subType: string;
-    reason: string;
-    location: string;
-  };
+  jobData?: Requisition;
 }) => {
   try {
     const completion = await openrouterClient.chat.completions.create({
@@ -95,7 +88,7 @@ const GenerateAndSaveJobDescription = async ({
 
     // Save the generated content to the database
     await api.requisition.updateDescription({
-      id: jobData.id,
+      id: jobData?.id as string,
       description: generatedContent,
     });
 
@@ -116,9 +109,13 @@ const GenerateAndSaveJobDescription = async ({
   }
 };
 
-const DisplayJobDescription = ({ description }) => {
+const DisplayJobDescription = ({
+  description,
+}: {
+  description: string | null;
+}) => {
   // Check if the description is already in HTML format
-  if (description.startsWith("<") && description.includes("</")) {
+  if (description?.startsWith("<") && description?.includes("</")) {
     return (
       <div
         className="prose dark:prose-invert [&_strong]:text-primary max-w-none space-y-4 [&_h1]:mt-8 [&_h1]:mb-6 [&_h2]:mt-8 [&_h2]:mb-5 [&_h3]:mt-6 [&_h3]:mb-4 [&_hr]:my-8 [&_li]:mb-2 [&_ol]:mb-6 [&_ol]:ml-5 [&_ol]:space-y-3 [&_p]:mb-6 [&_strong]:font-bold [&_ul]:mb-6 [&_ul]:ml-5 [&_ul]:space-y-3"
