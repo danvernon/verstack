@@ -50,14 +50,13 @@ export default function CreateCompany() {
       });
 
       toast.success("Company created successfully", { id });
+      form.reset();
 
       await utils.company.getCompany.invalidate();
       router.refresh();
     } catch (error) {
       toast.error("Error creating company", { id });
       console.error(error);
-    } finally {
-      form.reset();
     }
   }
 

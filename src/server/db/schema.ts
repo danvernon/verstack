@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { desc, InferSelectModel, relations, sql } from "drizzle-orm";
 import { index, pgEnum, pgTable } from "drizzle-orm/pg-core";
 
 export const companies = pgTable(
@@ -65,6 +65,8 @@ export const requisitionReasonEnum = pgEnum("requisition_reason", [
   "GROWTH",
 ]);
 
+export const locationEnum = pgEnum("location", ["REMOTE", "ONSITE", "HYBRID"]);
+
 export const requisitions = pgTable(
   "requisition",
   (d) => ({
@@ -75,14 +77,12 @@ export const requisitions = pgTable(
       .notNull()
       .references(() => users.id),
     title: d.varchar({ length: 256 }).notNull(),
-    jobProfile: d.varchar({ length: 256 }).notNull(),
-    jobFamily: d.varchar({ length: 256 }).notNull(),
-    workerType: workerTypeEnum().notNull(),
-    workerSubType: workerSubTypeEnum().notNull(),
-    jobPostingTitle: d.varchar({ length: 256 }).notNull(),
-    numberOfOpenings: d.integer().notNull(),
-    requisitionReason: requisitionReasonEnum().notNull(),
-    isConfidential: d.boolean().default(false).notNull(),
+    level: d.varchar({ length: 256 }).notNull(),
+    type: workerTypeEnum().notNull(),
+    subType: workerSubTypeEnum().notNull(),
+    reason: requisitionReasonEnum().notNull(),
+    location: locationEnum().notNull(),
+    description: d.text(),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -94,3 +94,12 @@ export const requisitions = pgTable(
     index("requisition_user_id_idx").on(t.userId),
   ],
 );
+
+export type Requisition = InferSelectModel<typeof requisitions>;
+
+export const requisitionRelations = relations(requisitions, ({ one }) => ({
+  company: one(companies, {
+    fields: [requisitions.companyId],
+    references: [companies.id],
+  }),
+}));
