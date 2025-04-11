@@ -92,7 +92,7 @@ export default function CreateForm() {
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Job Title</FormLabel>
+                <FormLabel>Job title</FormLabel>
                 <FormControl>
                   <Input placeholder="Senior Broker" {...field} />
                 </FormControl>
@@ -108,7 +108,7 @@ export default function CreateForm() {
             name="level"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Job Level</FormLabel>
+                <FormLabel>Job level</FormLabel>
                 <FormControl>
                   <Input placeholder="Grade 4, VP, etc" {...field} />
                 </FormControl>
@@ -121,12 +121,12 @@ export default function CreateForm() {
             name="type"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel>Job Type</FormLabel>
+                <FormLabel>Job type</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-5 gap-4"
+                    className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
                     {reqFormSchema.shape.type.options.map((option) => (
                       <FormItem
@@ -152,12 +152,12 @@ export default function CreateForm() {
             name="subType"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel>Position Type</FormLabel>
+                <FormLabel>Position type</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-5 gap-4"
+                    className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
                     {reqFormSchema.shape.subType.options.map((option) => (
                       <FormItem
@@ -182,13 +182,13 @@ export default function CreateForm() {
             control={form.control}
             name="reason"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Requisition Reason</FormLabel>
+              <FormItem className="space-y-3">
+                <FormLabel>Requisition reason</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-5 gap-4"
+                    className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
                     {reqFormSchema.shape.reason.options.map((option) => (
                       <FormItem
@@ -213,13 +213,13 @@ export default function CreateForm() {
             control={form.control}
             name="location"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="space-y-3">
                 <FormLabel>Location</FormLabel>
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-5 gap-4"
+                    className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
                     {reqFormSchema.shape.location.options.map((option) => (
                       <FormItem
@@ -251,7 +251,7 @@ export default function CreateForm() {
               createRequisition.isPending || form.formState.isSubmitting
             }
           >
-            Summarise Requisition
+            Create requisition
           </Button>
         </form>
       </Form>
