@@ -86,6 +86,8 @@ const GenerateAndSaveJobDescription = async ({
 
     const generatedContent = completion.choices[0].message.content || "";
 
+    console.log("Generated content:", generatedContent);
+
     // Save the generated content to the database
     await api.requisition.updateDescription({
       id: jobData?.id as string,
