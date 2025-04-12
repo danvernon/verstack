@@ -1,8 +1,8 @@
+import type { Requisition } from "@/server/db/schema";
 import { Suspense } from "react";
 import { generateJobDescription } from "@/app/actions/generateDescription";
 import { MarkdownComponents } from "@/components/markdown-components";
 import { JobDescriptionSkeleton } from "@/components/view/skeleton";
-import { Requisition } from "@/server/db/schema";
 import { api } from "@/trpc/server";
 import ReactMarkdown from "react-markdown";
 
@@ -16,7 +16,7 @@ const GenerateAndSaveJobDescription = async ({
 
     // Save the generated content to the database
     await api.requisition.updateDescription({
-      id: jobData?.id as string,
+      id: jobData?.id ?? "",
       description: generatedContent,
     });
 

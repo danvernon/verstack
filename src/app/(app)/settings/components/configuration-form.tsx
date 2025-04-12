@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { appRouter } from "@/server/api/root";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -36,8 +35,8 @@ export function ConfigurationForm() {
   const { data: company } = api.company.get.useQuery();
 
   const defaultValues: Partial<ConfigurationFormValues> = {
-    name: company?.name,
-    logo: company?.logo,
+    name: company?.name ?? "",
+    logo: company?.logo ?? "",
     // bio: "I own a computer.",
     // urls: [
     //   { value: "https://shadcn.com" },

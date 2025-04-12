@@ -1,5 +1,7 @@
 "use client";
 
+import type { Requisition } from "@/server/db/schema";
+import type { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Requisition } from "@/server/db/schema";
-import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
 
 import { Checkbox } from "../ui/checkbox";

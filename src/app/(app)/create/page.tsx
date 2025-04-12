@@ -74,7 +74,7 @@ export default function CreateForm() {
       toast.success("Requisition created successfully", { id });
       form.reset();
 
-      router.push(`/view/${res.id}`);
+      router.push(`/view/${res?.id}`);
     } catch (error) {
       toast.error("Error creating requisition", { id });
       console.error(error);
@@ -259,10 +259,7 @@ export default function CreateForm() {
   );
 }
 
-function formatStringValue(
-  value: string,
-  capitalizeAll: boolean = false,
-): string {
+function formatStringValue(value: string, capitalizeAll = false): string {
   if (!value) return "Unknown";
 
   // Replace underscores with spaces and convert to lowercase

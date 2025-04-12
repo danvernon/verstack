@@ -3,8 +3,8 @@ import { api } from "@/trpc/server";
 
 import { ConfigurationForm } from "../components/configuration-form";
 
-export default function SettingsConfigurationPage() {
-  api.company.get.prefetch();
+export default async function SettingsConfigurationPage() {
+  await api.company.get.prefetch();
 
   return (
     <div className="space-y-6">

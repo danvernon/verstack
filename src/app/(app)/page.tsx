@@ -13,7 +13,7 @@ export default async function Home() {
   }
 
   try {
-    const user = (await api.user.getUser()) || (await api.user.create());
+    const user = (await api.user.getUser()) ?? (await api.user.create());
 
     if (!user) {
       throw new Error("Failed to get or create user");
