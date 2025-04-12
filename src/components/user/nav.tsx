@@ -18,7 +18,7 @@ import { SignOutButton } from "./sign-out";
 export async function Nav() {
   const user = await currentUser();
 
-  const company = await api.company.getCompany();
+  const company = await api.company.get();
 
   return (
     <header className="bg-background sticky top-0 flex h-16 items-center justify-between gap-4 border-b px-4 md:px-6">

@@ -19,7 +19,7 @@ export default async function Home() {
       throw new Error("Failed to get or create user");
     }
 
-    const hasCompany = await api.company.getCompany();
+    const hasCompany = await api.company.get();
 
     if (!hasCompany) {
       return (

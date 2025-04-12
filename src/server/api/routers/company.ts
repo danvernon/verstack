@@ -35,11 +35,11 @@ export const companyRouter = createTRPCRouter({
         return company[0];
       });
     }),
-  getCompany: protectedProcedure.query(async ({ ctx }) => {
-    const company = await ctx.db.query.companies.findFirst({
-      where: (company, { eq }) => eq(company.creatorId, ctx.auth.userId),
+  get: protectedProcedure.query(async ({ ctx }) => {
+    const res = await ctx.db.query.companies.findFirst({
+      where: eq(companies.creatorId, ctx.auth.userId),
     });
 
-    return company;
+    return res;
   }),
 });

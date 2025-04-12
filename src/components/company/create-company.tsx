@@ -52,7 +52,7 @@ export default function CreateCompany() {
       toast.success("Company created successfully", { id });
       form.reset();
 
-      await utils.company.getCompany.invalidate();
+      await utils.company.get.invalidate();
       router.refresh();
     } catch (error) {
       toast.error("Error creating company", { id });

@@ -41,6 +41,10 @@ export const requisitionRouter = createTRPCRouter({
           })
           .returning();
 
+        if (!newReq) {
+          throw new Error("Failed to create requisition");
+        }
+
         return newReq[0];
       });
     }),

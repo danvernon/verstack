@@ -1,7 +1,7 @@
 "use client";
 
-import { api } from "@/trpc/react";
 import { Suspense } from "react";
+import { api } from "@/trpc/react";
 import Markdown from "react-markdown";
 
 function GreetingContent() {

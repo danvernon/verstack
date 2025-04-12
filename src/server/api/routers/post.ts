@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -7,6 +5,7 @@ import {
 } from "@/server/api/trpc";
 import { posts } from "@/server/db/schema";
 import { openrouterClient } from "@/utils/open-ai";
+import { z } from "zod";
 
 export const postRouter = createTRPCRouter({
   hello: protectedProcedure.query(async () => {
