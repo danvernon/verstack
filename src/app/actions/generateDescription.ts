@@ -1,9 +1,14 @@
 // app/actions/generateDescription.ts
 "use server";
 
+import { Requisition } from "@/server/db/schema";
 import { openrouterClient } from "@/utils/open-ai";
 
-export async function generateJobDescription(jobData) {
+export async function generateJobDescription({
+  jobData,
+}: {
+  jobData?: Requisition;
+}) {
   try {
     const completion = await openrouterClient.chat.completions.create({
       model: "google/gemma-3-4b-it",
