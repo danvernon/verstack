@@ -93,10 +93,6 @@ export const companyRouter = createTRPCRouter({
           },
           {
             companyId: company[0].id,
-            name: "Replacement",
-          },
-          {
-            companyId: company[0].id,
             name: "New Position",
           },
           {

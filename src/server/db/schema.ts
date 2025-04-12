@@ -9,6 +9,7 @@ export const companies = pgTable(
     name: d.varchar({ length: 256 }).notNull(),
     logo: d.varchar({ length: 512 }),
     creatorId: d.varchar({ length: 256 }).notNull(),
+    deletedAt: d.timestamp({ withTimezone: true }),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -25,7 +26,9 @@ export const users = pgTable(
   "user",
   (d) => ({
     id: d.varchar({ length: 256 }).primaryKey(),
-    companyId: d.uuid().references(() => companies.id),
+    companyId: d
+      .uuid()
+      .references(() => companies.id, { onDelete: "set null" }),
   }),
   (t) => [index("user_company_id_idx").on(t.companyId)],
 );
@@ -37,7 +40,7 @@ export const ROLE_VALUES = [
   "MEMBER",
 ] as const satisfies readonly [string, ...string[]];
 
-export const roleEnum = pgEnum("role", ROLE_VALUES);
+export const roleEnum = pgEnum("member_role", ROLE_VALUES);
 
 export const companyMembers = pgTable(
   "company_member",
@@ -46,12 +49,13 @@ export const companyMembers = pgTable(
     userId: d
       .varchar({ length: 256 })
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     companyId: d
       .uuid()
       .notNull()
-      .references(() => companies.id),
+      .references(() => companies.id, { onDelete: "cascade" }),
     role: roleEnum("MEMBER").notNull(),
+    deletedAt: d.timestamp({ withTimezone: true }),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -68,12 +72,17 @@ export const companyMembers = pgTable(
   ],
 );
 
-export const invitationStatusEnum = pgEnum("role", [
+export const INVITATION_STATUS_VALUES = [
   "PENDING",
   "ACCEPTED",
   "REJECTED",
   "EXPIRED",
-]);
+] as const satisfies readonly [string, ...string[]];
+
+export const invitationStatusEnum = pgEnum(
+  "invitation_status",
+  INVITATION_STATUS_VALUES,
+);
 
 export const invitations = pgTable(
   "invitation",
@@ -83,12 +92,11 @@ export const invitations = pgTable(
     companyId: d
       .uuid()
       .notNull()
-      .references(() => companies.id),
+      .references(() => companies.id, { onDelete: "cascade" }),
     invitedById: d
       .varchar({ length: 256 })
       .notNull()
-      .references(() => users.id),
-    role: roleEnum("MEMBER").notNull(),
+      .references(() => users.id, { onDelete: "cascade" }),
     token: d.varchar({ length: 256 }).notNull().unique(),
     expiresAt: d.timestamp({ withTimezone: true }).notNull(),
     status: invitationStatusEnum("PENDING").notNull(),
@@ -105,34 +113,74 @@ export const invitations = pgTable(
   ],
 );
 
+export const auditLogs = pgTable(
+  "audit_log",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    entityType: d.varchar({ length: 100 }).notNull(),
+    entityId: d.uuid().notNull(),
+    userId: d
+      .varchar({ length: 256 })
+      .notNull()
+      .references(() => users.id, { onDelete: "set null" }),
+    action: d.varchar({ length: 100 }).notNull(),
+    changes: d.jsonb(),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+  }),
+  (t) => [
+    index("audit_log_entity_type_idx").on(t.entityType),
+    index("audit_log_entity_id_idx").on(t.entityId),
+    index("audit_log_user_id_idx").on(t.userId),
+  ],
+);
+
+export const REQUISITION_STATUS_VALUES = [
+  "DRAFT",
+  "APPROVED",
+  "PUBLISHED",
+  "CLOSED",
+] as const satisfies readonly [string, ...string[]];
+
+export const requisitionStatusEnum = pgEnum(
+  "requisition_status",
+  REQUISITION_STATUS_VALUES,
+);
+
 export const requisitions = pgTable(
   "requisition",
   (d) => ({
     id: d.uuid().primaryKey().defaultRandom(),
-    companyId: d.uuid().references(() => companies.id),
+    companyId: d.uuid().references(() => companies.id, { onDelete: "cascade" }),
     userId: d
       .varchar({ length: 256 })
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "restrict" }),
     title: d.varchar({ length: 256 }).notNull(),
     level: d.varchar({ length: 256 }).notNull(),
     typeId: d
       .uuid()
       .notNull()
-      .references(() => companyWorkerTypes.id),
+      .references(() => companyWorkerTypes.id, { onDelete: "restrict" }),
     subTypeId: d
       .uuid()
       .notNull()
-      .references(() => companyWorkerSubTypes.id),
+      .references(() => companyWorkerSubTypes.id, { onDelete: "restrict" }),
     reasonId: d
       .uuid()
       .notNull()
-      .references(() => companyRequisitionReasons.id),
+      .references(() => companyRequisitionReasons.id, { onDelete: "restrict" }),
     locationId: d
       .uuid()
       .notNull()
-      .references(() => companyLocations.id),
+      .references(() => companyLocations.id, { onDelete: "restrict" }),
     description: d.text(),
+    status: requisitionStatusEnum("DRAFT").notNull(),
+    deletedAt: d.timestamp({ withTimezone: true }),
+    version: d.integer().default(1).notNull(),
+    changeHistory: d.jsonb().default([]),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -142,6 +190,8 @@ export const requisitions = pgTable(
   (t) => [
     index("requisition_company_id_idx").on(t.companyId),
     index("requisition_user_id_idx").on(t.userId),
+    index("requisition_status_idx").on(t.status),
+    index("requisition_deleted_at_idx").on(t.deletedAt),
   ],
 );
 
@@ -151,6 +201,26 @@ export const requisitionRelations = relations(requisitions, ({ one }) => ({
   company: one(companies, {
     fields: [requisitions.companyId],
     references: [companies.id],
+  }),
+  user: one(users, {
+    fields: [requisitions.userId],
+    references: [users.id],
+  }),
+  workerType: one(companyWorkerTypes, {
+    fields: [requisitions.typeId],
+    references: [companyWorkerTypes.id],
+  }),
+  workerSubType: one(companyWorkerSubTypes, {
+    fields: [requisitions.subTypeId],
+    references: [companyWorkerSubTypes.id],
+  }),
+  reason: one(companyRequisitionReasons, {
+    fields: [requisitions.reasonId],
+    references: [companyRequisitionReasons.id],
+  }),
+  location: one(companyLocations, {
+    fields: [requisitions.locationId],
+    references: [companyLocations.id],
   }),
 }));
 
@@ -166,6 +236,7 @@ export const companyWorkerTypes = pgTable(
     name: d.varchar({ length: 100 }).notNull(),
     description: d.varchar({ length: 256 }),
     isActive: d.boolean().notNull().default(true),
+    deletedAt: d.timestamp({ withTimezone: true }),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -178,7 +249,6 @@ export const companyWorkerTypes = pgTable(
   ],
 );
 
-// Company worker sub types
 export const companyWorkerSubTypes = pgTable(
   "company_worker_sub_type",
   (d) => ({
@@ -190,6 +260,7 @@ export const companyWorkerSubTypes = pgTable(
     name: d.varchar({ length: 100 }).notNull(),
     description: d.varchar({ length: 256 }),
     isActive: d.boolean().notNull().default(true),
+    deletedAt: d.timestamp({ withTimezone: true }),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -205,7 +276,6 @@ export const companyWorkerSubTypes = pgTable(
   ],
 );
 
-// Company requisition reasons
 export const companyRequisitionReasons = pgTable(
   "company_requisition_reason",
   (d) => ({
@@ -217,6 +287,7 @@ export const companyRequisitionReasons = pgTable(
     name: d.varchar({ length: 100 }).notNull(),
     description: d.varchar({ length: 256 }),
     isActive: d.boolean().notNull().default(true),
+    deletedAt: d.timestamp({ withTimezone: true }),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -232,7 +303,6 @@ export const companyRequisitionReasons = pgTable(
   ],
 );
 
-// Company locations
 export const companyLocations = pgTable(
   "company_location",
   (d) => ({
@@ -244,6 +314,7 @@ export const companyLocations = pgTable(
     name: d.varchar({ length: 100 }).notNull(),
     description: d.varchar({ length: 256 }),
     isActive: d.boolean().notNull().default(true),
+    deletedAt: d.timestamp({ withTimezone: true }),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
