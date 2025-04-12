@@ -1,5 +1,6 @@
-import { InferSelectModel, relations, sql } from "drizzle-orm";
-import { index, pgEnum, pgTable } from "drizzle-orm/pg-core";
+import type { InferSelectModel } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
+import { index, pgEnum, pgTable, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const companies = pgTable(
   "company",
@@ -27,6 +28,79 @@ export const users = pgTable(
     companyId: d.uuid().references(() => companies.id),
   }),
   (t) => [index("user_company_id_idx").on(t.companyId)],
+);
+
+export const roleEnum = pgEnum("role", [
+  "OWNER",
+  "ADMIN",
+  "APPROVER",
+  "MEMBER",
+]);
+
+export const companyMembers = pgTable(
+  "company_member",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    userId: d
+      .varchar({ length: 256 })
+      .notNull()
+      .references(() => users.id),
+    companyId: d
+      .uuid()
+      .notNull()
+      .references(() => companies.id),
+    role: roleEnum("MEMBER").array().notNull(),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("company_member_user_id_idx").on(t.userId),
+    index("company_member_company_id_idx").on(t.companyId),
+    uniqueIndex("company_member_user_company_unique_idx").on(
+      t.userId,
+      t.companyId,
+    ),
+  ],
+);
+
+export const invitationStatusEnum = pgEnum("role", [
+  "PENDING",
+  "ACCEPTED",
+  "REJECTED",
+  "EXPIRED",
+]);
+
+export const invitations = pgTable(
+  "invitation",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    email: d.varchar({ length: 256 }).notNull(),
+    companyId: d
+      .uuid()
+      .notNull()
+      .references(() => companies.id),
+    invitedById: d
+      .varchar({ length: 256 })
+      .notNull()
+      .references(() => users.id),
+    role: roleEnum("MEMBER").notNull(),
+    token: d.varchar({ length: 256 }).notNull().unique(),
+    expiresAt: d.timestamp({ withTimezone: true }).notNull(),
+    status: invitationStatusEnum("PENDING").notNull(),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("invitation_email_idx").on(t.email),
+    index("invitation_company_id_idx").on(t.companyId),
+    index("invitation_token_idx").on(t.token),
+  ],
 );
 
 export const posts = pgTable(
