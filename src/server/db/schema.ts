@@ -30,12 +30,14 @@ export const users = pgTable(
   (t) => [index("user_company_id_idx").on(t.companyId)],
 );
 
-export const roleEnum = pgEnum("role", [
+export const ROLE_VALUES = [
   "OWNER",
   "ADMIN",
   "APPROVER",
   "MEMBER",
-]);
+] as const satisfies readonly [string, ...string[]];
+
+export const roleEnum = pgEnum("role", ROLE_VALUES);
 
 export const companyMembers = pgTable(
   "company_member",
@@ -49,7 +51,7 @@ export const companyMembers = pgTable(
       .uuid()
       .notNull()
       .references(() => companies.id),
-    role: roleEnum("MEMBER").array().notNull(),
+    role: roleEnum("MEMBER").notNull(),
     createdAt: d
       .timestamp({ withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
@@ -103,44 +105,6 @@ export const invitations = pgTable(
   ],
 );
 
-export const posts = pgTable(
-  "post",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }).notNull(),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("name_idx").on(t.name)],
-);
-
-export const workerTypeEnum = pgEnum("worker_type", [
-  "EMPLOYEE",
-  "CONTRACTOR",
-  "INTERN",
-  "CONSULTANT",
-]);
-
-export const workerSubTypeEnum = pgEnum("worker_sub_type", [
-  "FULL_TIME",
-  "PART_TIME",
-  "TEMPORARY",
-  "SEASONAL",
-]);
-
-export const requisitionReasonEnum = pgEnum("requisition_reason", [
-  "BACKFILL",
-  "NEW_POSITION",
-  "REPLACEMENT",
-  "REORGANIZATION",
-  "GROWTH",
-]);
-
-export const locationEnum = pgEnum("location", ["REMOTE", "ONSITE", "HYBRID"]);
-
 export const requisitions = pgTable(
   "requisition",
   (d) => ({
@@ -152,10 +116,22 @@ export const requisitions = pgTable(
       .references(() => users.id),
     title: d.varchar({ length: 256 }).notNull(),
     level: d.varchar({ length: 256 }).notNull(),
-    type: workerTypeEnum().notNull(),
-    subType: workerSubTypeEnum().notNull(),
-    reason: requisitionReasonEnum().notNull(),
-    location: locationEnum().notNull(),
+    typeId: d
+      .uuid()
+      .notNull()
+      .references(() => companyWorkerTypes.id),
+    subTypeId: d
+      .uuid()
+      .notNull()
+      .references(() => companyWorkerSubTypes.id),
+    reasonId: d
+      .uuid()
+      .notNull()
+      .references(() => companyRequisitionReasons.id),
+    locationId: d
+      .uuid()
+      .notNull()
+      .references(() => companyLocations.id),
     description: d.text(),
     createdAt: d
       .timestamp({ withTimezone: true })
@@ -177,3 +153,105 @@ export const requisitionRelations = relations(requisitions, ({ one }) => ({
     references: [companies.id],
   }),
 }));
+
+// Company worker types
+export const companyWorkerTypes = pgTable(
+  "company_worker_type",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    companyId: d
+      .uuid()
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    name: d.varchar({ length: 100 }).notNull(),
+    description: d.varchar({ length: 256 }),
+    isActive: d.boolean().notNull().default(true),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("company_worker_type_company_id_idx").on(t.companyId),
+    uniqueIndex("company_worker_type_company_name_idx").on(t.companyId, t.name),
+  ],
+);
+
+// Company worker sub types
+export const companyWorkerSubTypes = pgTable(
+  "company_worker_sub_type",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    companyId: d
+      .uuid()
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    name: d.varchar({ length: 100 }).notNull(),
+    description: d.varchar({ length: 256 }),
+    isActive: d.boolean().notNull().default(true),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("company_worker_sub_type_company_id_idx").on(t.companyId),
+    uniqueIndex("company_worker_sub_type_company_name_idx").on(
+      t.companyId,
+      t.name,
+    ),
+  ],
+);
+
+// Company requisition reasons
+export const companyRequisitionReasons = pgTable(
+  "company_requisition_reason",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    companyId: d
+      .uuid()
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    name: d.varchar({ length: 100 }).notNull(),
+    description: d.varchar({ length: 256 }),
+    isActive: d.boolean().notNull().default(true),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("company_requisition_reason_company_id_idx").on(t.companyId),
+    uniqueIndex("company_requisition_reason_company_name_idx").on(
+      t.companyId,
+      t.name,
+    ),
+  ],
+);
+
+// Company locations
+export const companyLocations = pgTable(
+  "company_location",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    companyId: d
+      .uuid()
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    name: d.varchar({ length: 100 }).notNull(),
+    description: d.varchar({ length: 256 }),
+    isActive: d.boolean().notNull().default(true),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("company_location_company_id_idx").on(t.companyId),
+    uniqueIndex("company_location_company_name_idx").on(t.companyId, t.name),
+  ],
+);

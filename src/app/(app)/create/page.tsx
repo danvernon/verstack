@@ -13,12 +13,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  locationEnum,
-  requisitionReasonEnum,
-  workerSubTypeEnum,
-  workerTypeEnum,
-} from "@/server/db/schema";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -32,17 +26,17 @@ const reqFormSchema = z.object({
   level: z.string().min(1, {
     message: "Level is required",
   }),
-  type: z.enum(workerTypeEnum.enumValues, {
-    errorMap: () => ({ message: "Type is required" }),
+  typeId: z.string().min(1, {
+    message: "Type is required",
   }),
-  subType: z.enum(workerSubTypeEnum.enumValues, {
-    errorMap: () => ({ message: "Sub Type is required" }),
+  subTypeId: z.string().min(1, {
+    message: "Subtype is required",
   }),
-  reason: z.enum(requisitionReasonEnum.enumValues, {
-    errorMap: () => ({ message: "Reason is required" }),
+  reasonId: z.string().min(1, {
+    message: "Reason is required",
   }),
-  location: z.enum(locationEnum.enumValues, {
-    errorMap: () => ({ message: "Location is required" }),
+  locationId: z.string().min(1, {
+    message: "Location is required",
   }),
 });
 
@@ -118,7 +112,7 @@ export default function CreateForm() {
           />
           <FormField
             control={form.control}
-            name="type"
+            name="typeId"
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel>Job type</FormLabel>
@@ -128,7 +122,7 @@ export default function CreateForm() {
                     defaultValue={field.value}
                     className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
-                    {reqFormSchema.shape.type.options.map((option) => (
+                    {/* {reqFormSchema.shape.type.options.map((option) => (
                       <FormItem
                         className="flex items-center space-y-0 space-x-3"
                         key={option}
@@ -140,7 +134,7 @@ export default function CreateForm() {
                           {formatStringValue(option)}
                         </FormLabel>
                       </FormItem>
-                    ))}
+                    ))} */}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
@@ -149,7 +143,7 @@ export default function CreateForm() {
           />
           <FormField
             control={form.control}
-            name="subType"
+            name="subTypeId"
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel>Position type</FormLabel>
@@ -159,7 +153,7 @@ export default function CreateForm() {
                     defaultValue={field.value}
                     className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
-                    {reqFormSchema.shape.subType.options.map((option) => (
+                    {/* {reqFormSchema.shape.subType.options.map((option) => (
                       <FormItem
                         className="flex items-center space-y-0 space-x-3"
                         key={option}
@@ -171,7 +165,7 @@ export default function CreateForm() {
                           {formatStringValue(option)}
                         </FormLabel>
                       </FormItem>
-                    ))}
+                    ))} */}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
@@ -180,7 +174,7 @@ export default function CreateForm() {
           />
           <FormField
             control={form.control}
-            name="reason"
+            name="reasonId"
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel>Requisition reason</FormLabel>
@@ -190,7 +184,7 @@ export default function CreateForm() {
                     defaultValue={field.value}
                     className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
-                    {reqFormSchema.shape.reason.options.map((option) => (
+                    {/* {reqFormSchema.shape.reason.options.map((option) => (
                       <FormItem
                         className="flex items-center space-y-0 space-x-3"
                         key={option}
@@ -202,7 +196,7 @@ export default function CreateForm() {
                           {formatStringValue(option)}
                         </FormLabel>
                       </FormItem>
-                    ))}
+                    ))} */}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
@@ -211,7 +205,7 @@ export default function CreateForm() {
           />
           <FormField
             control={form.control}
-            name="location"
+            name="locationId"
             render={({ field }) => (
               <FormItem className="space-y-3">
                 <FormLabel>Location</FormLabel>
@@ -221,7 +215,7 @@ export default function CreateForm() {
                     defaultValue={field.value}
                     className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
-                    {reqFormSchema.shape.location.options.map((option) => (
+                    {/* {reqFormSchema.shape.location.options.map((option) => (
                       <FormItem
                         className="flex items-center space-y-0 space-x-3"
                         key={option}
@@ -233,18 +227,13 @@ export default function CreateForm() {
                           {formatStringValue(option)}
                         </FormLabel>
                       </FormItem>
-                    ))}
+                    ))} */}
                   </RadioGroup>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          {form.formState.errors.type && (
-            <div className="text-red-500">
-              {form.formState.errors.type.message}
-            </div>
-          )}
           <Button
             type="submit"
             disabled={

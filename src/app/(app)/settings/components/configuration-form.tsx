@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,7 +14,8 @@ import { Input } from "@/components/ui/input";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { toast } from "sonner";
+import { util, z } from "zod";
 
 const configurationFormSchema = z.object({
   name: z.string().min(2, {
@@ -32,11 +34,18 @@ const configurationFormSchema = z.object({
 type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
 
 export function ConfigurationForm() {
+  const utils = api.useUtils();
+
   const { data: company } = api.company.get.useQuery();
+  const updateCompany = api.company.update.useMutation({
+    onSuccess: async () => {
+      await utils.company.invalidate();
+    },
+  });
 
   const defaultValues: Partial<ConfigurationFormValues> = {
-    name: company?.name ?? "",
-    logo: company?.logo ?? "",
+    name: "",
+    logo: "",
     // bio: "I own a computer.",
     // urls: [
     //   { value: "https://shadcn.com" },
@@ -47,16 +56,36 @@ export function ConfigurationForm() {
   const form = useForm<ConfigurationFormValues>({
     resolver: zodResolver(configurationFormSchema),
     defaultValues,
-    mode: "onChange",
+    // mode: "onChange",
   });
+
+  useEffect(() => {
+    if (company) {
+      form.reset({
+        name: company.name,
+        logo: company.logo ?? "",
+      });
+    }
+  }, [company, form]);
 
   // const { fields, append } = useFieldArray({
   //   name: "urls",
   //   control: form.control,
   // });
 
-  function onSubmit(data: ConfigurationFormValues) {
-    console.log(data);
+  async function onSubmit(data: ConfigurationFormValues) {
+    const id = toast.loading("Updating company...");
+    try {
+      await updateCompany.mutateAsync({
+        ...data,
+      });
+
+      toast.success("Company updated successfully", { id });
+      form.reset();
+    } catch (error) {
+      toast.error("Error updating company", { id });
+      console.error(error);
+    }
   }
 
   return (

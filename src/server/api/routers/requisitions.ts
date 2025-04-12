@@ -1,10 +1,4 @@
-import {
-  locationEnum,
-  requisitionReasonEnum,
-  users,
-  workerSubTypeEnum,
-  workerTypeEnum,
-} from "@/server/db/schema";
+import { users } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 
@@ -17,10 +11,10 @@ export const requisitionRouter = createTRPCRouter({
       z.object({
         title: z.string(),
         level: z.string(),
-        type: z.enum(workerTypeEnum.enumValues),
-        subType: z.enum(workerSubTypeEnum.enumValues),
-        reason: z.enum(requisitionReasonEnum.enumValues),
-        location: z.enum(locationEnum.enumValues),
+        typeId: z.string(),
+        subTypeId: z.string(),
+        reasonId: z.string(),
+        locationId: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
