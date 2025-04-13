@@ -22,13 +22,6 @@ const companyFormSchema = z.object({
     message: "Company name must be at least 2 characters.",
   }),
   logo: z.string().url({ message: "Please enter a valid URL." }),
-  // urls: z
-  //   .array(
-  //     z.object({
-  //       value: z.string().url({ message: "Please enter a valid URL." }),
-  //     }),
-  //   )
-  //   .optional(),
 });
 
 type CompanyFormValues = z.infer<typeof companyFormSchema>;
@@ -44,34 +37,23 @@ export function CompanyForm() {
   });
 
   const defaultValues: Partial<CompanyFormValues> = {
-    name: "",
-    logo: "",
-    // bio: "I own a computer.",
-    // urls: [
-    //   { value: "https://shadcn.com" },
-    //   { value: "http://twitter.com/shadcn" },
-    // ],
+    name: company?.name ?? "",
+    logo: company?.logo ?? "",
   };
 
   const form = useForm<CompanyFormValues>({
     resolver: zodResolver(companyFormSchema),
     defaultValues,
-    // mode: "onChange",
   });
 
   useEffect(() => {
     if (company) {
       form.reset({
-        name: company.name,
+        name: company.name ?? "",
         logo: company.logo ?? "",
       });
     }
   }, [company, form]);
-
-  // const { fields, append } = useFieldArray({
-  //   name: "urls",
-  //   control: form.control,
-  // });
 
   async function onSubmit(data: CompanyFormValues) {
     const id = toast.loading("Updating company...");
@@ -120,38 +102,6 @@ export function CompanyForm() {
             </FormItem>
           )}
         />
-        {/* <div>
-          {fields.map((field, index) => (
-            <FormField
-              control={form.control}
-              key={field.id}
-              name={`urls.${index}.value`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className={cn(index !== 0 && "sr-only")}>
-                    URLs
-                  </FormLabel>
-                  <FormDescription className={cn(index !== 0 && "sr-only")}>
-                    Add links to your website, blog, or social media profiles.
-                  </FormDescription>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="mt-2"
-            onClick={() => append({ value: "" })}
-          >
-            Add URL
-          </Button>
-        </div> */}
         <Button type="submit">Update</Button>
       </form>
     </Form>

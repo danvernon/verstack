@@ -1,5 +1,5 @@
 import { users } from "@/server/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, max } from "drizzle-orm";
 import { z } from "zod";
 
 import { requisitions } from "../../db/schema";
@@ -23,17 +23,33 @@ export const requisitionRouter = createTRPCRouter({
           where: eq(users.id, ctx.auth.userId),
         });
 
-        if (!user) {
-          throw new Error("User not found");
+        if (!user?.companyId) {
+          throw new Error("User does not belong to a company");
         }
 
-        const requisitionNumber = 1;
+        const result = await tx
+          .select({
+            maxReqNum: max(requisitions.requisitionNumber),
+          })
+          .from(requisitions)
+          .where(eq(requisitions.companyId, user.companyId));
+
+        let nextReqNumber = 1;
+        if (result[0]?.maxReqNum) {
+          const currentMax = parseInt(result[0].maxReqNum, 10);
+          if (!isNaN(currentMax)) {
+            nextReqNumber = currentMax + 1;
+          }
+        }
+
+        const formattedReqNumber = nextReqNumber.toString().padStart(5, "0");
+
         const newReq = await tx
           .insert(requisitions)
           .values({
             userId: ctx.auth.userId,
             companyId: user.companyId,
-            requisitionNumber: requisitionNumber.toString(),
+            requisitionNumber: formattedReqNumber,
             status: "DRAFT",
             ...input,
           })
@@ -49,6 +65,10 @@ export const requisitionRouter = createTRPCRouter({
   all: protectedProcedure.query(async ({ ctx }) => {
     const res = await ctx.db.query.requisitions.findMany({
       where: eq(requisitions.userId, ctx.auth.userId),
+      with: {
+        workerType: true,
+        location: true,
+      },
     });
 
     return res;
@@ -58,6 +78,12 @@ export const requisitionRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const res = await ctx.db.query.requisitions.findFirst({
         where: eq(requisitions.id, input.id),
+        with: {
+          workerType: true,
+          workerSubType: true,
+          reason: true,
+          location: true,
+        },
       });
 
       return res;

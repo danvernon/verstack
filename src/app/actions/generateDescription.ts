@@ -1,10 +1,12 @@
 // app/actions/generateDescription.ts
 "use server";
 
-import type { Requisition } from "@/server/db/schema";
+import type { RequisitionWithPartialRelations } from "@/server/db/schema";
 import { openrouterClient } from "@/utils/open-ai";
 
-export async function generateJobDescription(jobData?: Requisition) {
+export async function generateJobDescription(
+  jobData?: RequisitionWithPartialRelations,
+) {
   if (!jobData) {
     throw new Error("Job data is required to generate a description.");
   }
@@ -22,10 +24,10 @@ export async function generateJobDescription(jobData?: Requisition) {
             Based on the following job title and industry, suggest the most relevant:
             Job title: ${jobData.title}
             Seniority: ${jobData.level}
-            Employment type: ${jobData.type}
-            Subtype: ${jobData.subType}
-            Reason: ${jobData.reason}
-            Location: ${jobData.location}
+            Employment type: ${jobData.workerType?.name}
+            Subtype: ${jobData.workerSubType?.name}
+            Reason: ${jobData.reason?.name}
+            Location: ${jobData.location?.name}
 
             Please provide:
             1. Essential technical skills (5-7)

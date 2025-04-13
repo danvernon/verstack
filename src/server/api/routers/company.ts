@@ -206,29 +206,114 @@ export const companyRouter = createTRPCRouter({
           throw new Error("Company not found");
         }
 
-        const existingLocations = await tx.query.companyLocations.findMany({
-          where: eq(companyLocations.companyId, company.id),
-        });
+        if (input.locations) {
+          const existingLocations = await tx.query.companyLocations.findMany({
+            where: eq(companyLocations.companyId, company.id),
+          });
 
-        const {
-          itemsToAdd: locationsToAdd,
-          itemsToDelete: locationIdsToDelete,
-        } = analyzeConfigItems(existingLocations, input.locations);
+          const {
+            itemsToAdd: locationsToAdd,
+            itemsToDelete: locationIdsToDelete,
+          } = analyzeConfigItems(existingLocations, input.locations);
 
-        if (locationsToAdd.length > 0) {
-          await tx.insert(companyLocations).values(
-            locationsToAdd.map((name) => ({
-              name,
-              companyId: company.id,
-            })),
-          );
+          if (locationsToAdd.length > 0) {
+            await tx.insert(companyLocations).values(
+              locationsToAdd.map((name) => ({
+                name,
+                companyId: company.id,
+              })),
+            );
+          }
+
+          for (const id of locationIdsToDelete) {
+            await tx
+              .update(companyLocations)
+              .set({ isActive: false, deletedAt: new Date() })
+              .where(eq(companyLocations.id, id));
+          }
         }
 
-        for (const id of locationIdsToDelete) {
-          await tx
-            .update(companyLocations)
-            .set({ isActive: false, deletedAt: new Date() })
-            .where(eq(companyLocations.id, id));
+        if (input.requisitionReasons) {
+          const existingReasons =
+            await tx.query.companyRequisitionReasons.findMany({
+              where: eq(companyRequisitionReasons.companyId, company.id),
+            });
+
+          const { itemsToAdd: reasonsToAdd, itemsToDelete: reasonIdsToDelete } =
+            analyzeConfigItems(existingReasons, input.requisitionReasons);
+
+          if (reasonsToAdd.length > 0) {
+            await tx.insert(companyRequisitionReasons).values(
+              reasonsToAdd.map((name) => ({
+                name,
+                companyId: company.id,
+              })),
+            );
+          }
+
+          for (const id of reasonIdsToDelete) {
+            await tx
+              .update(companyRequisitionReasons)
+              .set({ isActive: false, deletedAt: new Date() })
+              .where(eq(companyRequisitionReasons.id, id));
+          }
+        }
+
+        if (input.workerTypes) {
+          const existingWorkerTypes =
+            await tx.query.companyWorkerTypes.findMany({
+              where: eq(companyWorkerTypes.companyId, company.id),
+            });
+
+          const {
+            itemsToAdd: workerTypesToAdd,
+            itemsToDelete: workerTypeIdsToDelete,
+          } = analyzeConfigItems(existingWorkerTypes, input.workerTypes);
+
+          if (workerTypesToAdd.length > 0) {
+            await tx.insert(companyWorkerTypes).values(
+              workerTypesToAdd.map((name) => ({
+                name,
+                companyId: company.id,
+              })),
+            );
+          }
+
+          for (const id of workerTypeIdsToDelete) {
+            await tx
+              .update(companyWorkerTypes)
+              .set({ isActive: false, deletedAt: new Date() })
+              .where(eq(companyWorkerTypes.id, id));
+          }
+        }
+
+        // Add handling for workerSubTypes
+        if (input.workerSubTypes) {
+          const existingWorkerSubTypes =
+            await tx.query.companyWorkerSubTypes.findMany({
+              where: eq(companyWorkerSubTypes.companyId, company.id),
+            });
+
+          const {
+            itemsToAdd: workerSubTypesToAdd,
+            itemsToDelete: workerSubTypeIdsToDelete,
+          } = analyzeConfigItems(existingWorkerSubTypes, input.workerSubTypes);
+
+          if (workerSubTypesToAdd.length > 0) {
+            await tx.insert(companyWorkerSubTypes).values(
+              workerSubTypesToAdd.map((name) => ({
+                name,
+                companyId: company.id,
+              })),
+            );
+          }
+
+          for (const id of workerSubTypeIdsToDelete) {
+            await tx
+              .update(companyWorkerSubTypes)
+              .set({ isActive: false, deletedAt: new Date() })
+              .where(eq(companyWorkerSubTypes.id, id));
+          }
         }
 
         return { success: true };

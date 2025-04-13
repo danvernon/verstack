@@ -22,6 +22,8 @@ export const companies = pgTable(
   ],
 );
 
+export type Company = InferSelectModel<typeof companies>;
+
 export const companyRelations = relations(companies, ({ many }) => ({
   members: many(companyMembers),
   requisitions: many(requisitions),
@@ -41,6 +43,8 @@ export const users = pgTable(
   }),
   (t) => [index("user_company_id_idx").on(t.companyId)],
 );
+
+export type User = InferSelectModel<typeof users>;
 
 export const ROLE_VALUES = [
   "OWNER",
@@ -234,6 +238,15 @@ export const requisitionRelations = relations(requisitions, ({ one }) => ({
   }),
 }));
 
+export type RequisitionWithPartialRelations = Requisition & {
+  company?: Company;
+  user?: User;
+  workerType?: WorkerType;
+  workerSubType?: WorkerSubType;
+  reason?: RequisitionReason;
+  location?: Location;
+};
+
 // Company worker types
 export const companyWorkerTypes = pgTable(
   "company_worker_type",
@@ -258,6 +271,8 @@ export const companyWorkerTypes = pgTable(
     uniqueIndex("company_worker_type_company_name_idx").on(t.companyId, t.name),
   ],
 );
+
+export type WorkerType = InferSelectModel<typeof companyWorkerTypes>;
 
 export const companyWorkerSubTypes = pgTable(
   "company_worker_sub_type",
@@ -286,6 +301,8 @@ export const companyWorkerSubTypes = pgTable(
   ],
 );
 
+export type WorkerSubType = InferSelectModel<typeof companyWorkerSubTypes>;
+
 export const companyRequisitionReasons = pgTable(
   "company_requisition_reason",
   (d) => ({
@@ -313,6 +330,10 @@ export const companyRequisitionReasons = pgTable(
   ],
 );
 
+export type RequisitionReason = InferSelectModel<
+  typeof companyRequisitionReasons
+>;
+
 export const companyLocations = pgTable(
   "company_location",
   (d) => ({
@@ -336,6 +357,8 @@ export const companyLocations = pgTable(
     uniqueIndex("company_location_company_name_idx").on(t.companyId, t.name),
   ],
 );
+
+export type Location = InferSelectModel<typeof companyLocations>;
 
 export const companyLocationRelations = relations(
   companyLocations,

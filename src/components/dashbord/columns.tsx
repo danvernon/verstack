@@ -1,6 +1,6 @@
 "use client";
 
-import type { Requisition } from "@/server/db/schema";
+import type { RequisitionWithPartialRelations } from "@/server/db/schema";
 import type { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { MoreHorizontal } from "lucide-react";
 
 import { Checkbox } from "../ui/checkbox";
 
-export const columns: ColumnDef<Requisition>[] = [
+export const columns: ColumnDef<RequisitionWithPartialRelations>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -68,10 +68,10 @@ export const columns: ColumnDef<Requisition>[] = [
     accessorKey: "type",
     header: "Type",
     cell: ({ row }) => {
-      const type = row.original.type;
+      const type = row.original.workerType;
       return (
         <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
-          {type}
+          {type?.name}
         </span>
       );
     },
@@ -80,7 +80,7 @@ export const columns: ColumnDef<Requisition>[] = [
     accessorKey: "location",
     header: "Location",
     cell: ({ row }) => {
-      const location = row.original.location;
+      const location = row.original.location?.name;
       return (
         <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">
           {location}

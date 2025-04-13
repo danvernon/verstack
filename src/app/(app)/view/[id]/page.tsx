@@ -1,4 +1,4 @@
-import type { Requisition } from "@/server/db/schema";
+import type { RequisitionWithPartialRelations } from "@/server/db/schema";
 import { Suspense } from "react";
 import { generateJobDescription } from "@/app/actions/generateDescription";
 import { MarkdownComponents } from "@/components/markdown-components";
@@ -9,7 +9,7 @@ import ReactMarkdown from "react-markdown";
 const GenerateAndSaveJobDescription = async ({
   jobData,
 }: {
-  jobData?: Requisition;
+  jobData?: RequisitionWithPartialRelations;
 }) => {
   try {
     const generatedContent = await generateJobDescription(jobData);
@@ -85,15 +85,15 @@ export default async function ViewSingle({
           <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
             Draft
           </span>
-          {/* <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+          <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
             {requisition?.level}
           </span>
           <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
-            {requisition?.type}
+            {requisition?.workerType.name}
           </span>
           <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-            {requisition?.location}
-          </span> */}
+            {requisition?.location.name}
+          </span>
         </div>
       </div>
 
