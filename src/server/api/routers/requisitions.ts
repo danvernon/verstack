@@ -26,11 +26,14 @@ export const requisitionRouter = createTRPCRouter({
         if (!user) {
           throw new Error("User not found");
         }
+
+        const requisitionNumber = 1;
         const newReq = await tx
           .insert(requisitions)
           .values({
             userId: ctx.auth.userId,
             companyId: user.companyId,
+            requisitionNumber,
             ...input,
           })
           .returning();

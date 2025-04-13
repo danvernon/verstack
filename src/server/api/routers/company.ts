@@ -47,81 +47,57 @@ export const companyRouter = createTRPCRouter({
           role: ROLE_VALUES[0],
         });
 
-        await tx.insert(companyWorkerTypes).values([
-          {
-            companyId: company[0].id,
-            name: "Employee",
-          },
-          {
-            companyId: company[0].id,
-            name: "Contractor",
-          },
-          {
-            companyId: company[0].id,
-            name: "Intern",
-          },
-          {
-            companyId: company[0].id,
-            name: "Consultant",
-          },
-        ]);
+        const defaultWorkerTypes = [
+          "Employee",
+          "Contractor",
+          "Intern",
+          "Consultant",
+        ];
 
-        await tx.insert(companyWorkerSubTypes).values([
-          {
+        await tx.insert(companyWorkerTypes).values(
+          defaultWorkerTypes.map((name) => ({
             companyId: company[0].id,
-            name: "Full Time",
-          },
-          {
-            companyId: company[0].id,
-            name: "Part Time",
-          },
-          {
-            companyId: company[0].id,
-            name: "Temporary",
-          },
-          {
-            companyId: company[0].id,
-            name: "Contract",
-          },
-        ]);
+            name,
+          })),
+        );
 
-        await tx.insert(companyRequisitionReasons).values([
-          {
-            companyId: company[0].id,
-            name: "Backfill",
-          },
-          {
-            companyId: company[0].id,
-            name: "New Position",
-          },
-          {
-            companyId: company[0].id,
-            name: "Replacement",
-          },
-          {
-            companyId: company[0].id,
-            name: "Reorganisation",
-          },
-          {
-            companyId: company[0].id,
-            name: "Growth",
-          },
-        ]);
+        const defaultWorkerSubTypes = [
+          "Full Time",
+          "Part Time",
+          "Temporary",
+          "Contract",
+        ];
 
-        await tx.insert(companyLocations).values([
-          {
+        await tx.insert(companyWorkerSubTypes).values(
+          defaultWorkerSubTypes.map((name) => ({
             companyId: company[0].id,
-            name: "Remote",
-          },
-          {
+            name,
+          })),
+        );
+
+        const defaultRequisitionReasons = [
+          "Backfill",
+          "New Position",
+          "Replacement",
+          "Reorganisation",
+          "Growth",
+        ];
+
+        await tx.insert(companyRequisitionReasons).values(
+          defaultRequisitionReasons.map((name) => ({
             companyId: company[0].id,
-            name: "Onsite",
-          },
-          {
+            name,
+          })),
+        );
+
+        const defaultLocations = ["Remote", "Onsite", "Hybrid"];
+
+        await tx.insert(companyLocations).values(
+          defaultLocations.map((name) => ({
             companyId: company[0].id,
-            name: "Hybrid",
-          },
-        ]);
+            name,
+          })),
+        );
 
         await tx
           .update(users)

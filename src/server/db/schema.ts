@@ -167,6 +167,7 @@ export const requisitions = pgTable(
       .varchar({ length: 256 })
       .notNull()
       .references(() => users.id, { onDelete: "restrict" }),
+    requisitionNumber: d.varchar({ length: 20 }).notNull(),
     title: d.varchar({ length: 256 }).notNull(),
     level: d.varchar({ length: 256 }).notNull(),
     typeId: d
