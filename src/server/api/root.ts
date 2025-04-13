@@ -11,7 +11,6 @@ import { userRouter } from "./routers/user";
  */
 export const appRouter = createTRPCRouter({
   company: companyRouter,
-
   requisition: requisitionRouter,
   user: userRouter,
 });

@@ -5,30 +5,28 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { util, z } from "zod";
+import { z } from "zod";
 
 const configurationFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Company name must be at least 2 characters.",
-  }),
-  logo: z.string().url({ message: "Please enter a valid URL." }),
-  // urls: z
-  //   .array(
-  //     z.object({
-  //       value: z.string().url({ message: "Please enter a valid URL." }),
-  //     }),
-  //   )
-  //   .optional(),
+  locations: z
+    .array(
+      z.object({
+        value: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
@@ -36,21 +34,15 @@ type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
 export function ConfigurationForm() {
   const utils = api.useUtils();
 
-  const { data: company } = api.company.get.useQuery();
-  const updateCompany = api.company.update.useMutation({
+  const { data: company } = api.company.getConfigurations.useQuery();
+  const updateConfigurations = api.company.updateConfigurations.useMutation({
     onSuccess: async () => {
-      await utils.company.invalidate();
+      await utils.company.getConfigurations.invalidate();
     },
   });
 
   const defaultValues: Partial<ConfigurationFormValues> = {
-    name: "",
-    logo: "",
-    // bio: "I own a computer.",
-    // urls: [
-    //   { value: "https://shadcn.com" },
-    //   { value: "http://twitter.com/shadcn" },
-    // ],
+    locations: [],
   };
 
   const form = useForm<ConfigurationFormValues>({
@@ -62,28 +54,30 @@ export function ConfigurationForm() {
   useEffect(() => {
     if (company) {
       form.reset({
-        name: company.name,
-        logo: company.logo ?? "",
+        locations: company?.locations?.map((location) => ({
+          value: location.name,
+        })),
       });
     }
   }, [company, form]);
 
-  // const { fields, append } = useFieldArray({
-  //   name: "urls",
-  //   control: form.control,
-  // });
+  const { fields, append } = useFieldArray({
+    name: "locations",
+    control: form.control,
+  });
 
   async function onSubmit(data: ConfigurationFormValues) {
-    const id = toast.loading("Updating company...");
+    const id = toast.loading("Updating configurations...");
+    console.log({ data });
     try {
-      await updateCompany.mutateAsync({
+      await updateConfigurations.mutateAsync({
         ...data,
       });
 
-      toast.success("Company updated successfully", { id });
+      toast.success("Configurations updated successfully", { id });
       form.reset();
     } catch (error) {
-      toast.error("Error updating company", { id });
+      toast.error("Error updating configurations", { id });
       console.error(error);
     }
   }
@@ -91,51 +85,27 @@ export function ConfigurationForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company name</FormLabel>
-              <FormControl>
-                <Input placeholder="Acme" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="logo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Company logo</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://1000logos.net/wp-content/uploads/2016/10/ACME-Logo-1981.png"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {/* <div>
+        <div className="max-w-sm space-y-1">
           {fields.map((field, index) => (
             <FormField
               control={form.control}
               key={field.id}
-              name={`urls.${index}.value`}
+              name={`locations.${index}.value`}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className={cn(index !== 0 && "sr-only")}>
-                    URLs
+                    Locations
                   </FormLabel>
                   <FormDescription className={cn(index !== 0 && "sr-only")}>
                     Add links to your website, blog, or social media profiles.
                   </FormDescription>
                   <FormControl>
-                    <Input {...field} />
+                    <Input
+                      {...field}
+                      disabled={company?.locations?.some(
+                        (location) => location.name === field.value,
+                      )}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -149,9 +119,9 @@ export function ConfigurationForm() {
             className="mt-2"
             onClick={() => append({ value: "" })}
           >
-            Add URL
+            Add location
           </Button>
-        </div> */}
+        </div>
         <Button type="submit">Update</Button>
       </form>
     </Form>

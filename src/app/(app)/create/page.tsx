@@ -12,7 +12,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { api } from "@/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -56,6 +63,7 @@ export default function CreateForm() {
     mode: "onChange",
   });
 
+  const { data: company } = api.company.getConfigurations.useQuery();
   const createRequisition = api.requisition.create.useMutation();
 
   async function onSubmit(data: RequisitionFormValues) {
@@ -110,130 +118,117 @@ export default function CreateForm() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="typeId"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Job type</FormLabel>
-                <FormControl>
-                  <RadioGroup
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="typeId"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Job type</FormLabel>
+                  <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
-                    {/* {reqFormSchema.shape.type.options.map((option) => (
-                      <FormItem
-                        className="flex items-center space-y-0 space-x-3"
-                        key={option}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={option} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {formatStringValue(option)}
-                        </FormLabel>
-                      </FormItem>
-                    ))} */}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="subTypeId"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Position type</FormLabel>
-                <FormControl>
-                  <RadioGroup
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a job type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {company?.workerTypes.map((opt) => (
+                        <SelectItem value={opt.id} key={opt.id}>
+                          {opt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="subTypeId"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Position type</FormLabel>
+                  <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
-                    {/* {reqFormSchema.shape.subType.options.map((option) => (
-                      <FormItem
-                        className="flex items-center space-y-0 space-x-3"
-                        key={option}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={option} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {formatStringValue(option)}
-                        </FormLabel>
-                      </FormItem>
-                    ))} */}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="reasonId"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Requisition reason</FormLabel>
-                <FormControl>
-                  <RadioGroup
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a position type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {company?.workerSubTypes.map((opt) => (
+                        <SelectItem value={opt.id} key={opt.id}>
+                          {opt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="reasonId"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Requisition reason</FormLabel>
+                  <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
-                    {/* {reqFormSchema.shape.reason.options.map((option) => (
-                      <FormItem
-                        className="flex items-center space-y-0 space-x-3"
-                        key={option}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={option} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {formatStringValue(option)}
-                        </FormLabel>
-                      </FormItem>
-                    ))} */}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="locationId"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <RadioGroup
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a reason" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {company?.requisitionReasons.map((opt) => (
+                        <SelectItem value={opt.id} key={opt.id}>
+                          {opt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="locationId"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Location</FormLabel>
+                  <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid grid-cols-2 gap-4 lg:grid-cols-5"
                   >
-                    {/* {reqFormSchema.shape.location.options.map((option) => (
-                      <FormItem
-                        className="flex items-center space-y-0 space-x-3"
-                        key={option}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value={option} />
-                        </FormControl>
-                        <FormLabel className="font-normal">
-                          {formatStringValue(option)}
-                        </FormLabel>
-                      </FormItem>
-                    ))} */}
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a location" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {company?.locations.map((opt) => (
+                        <SelectItem value={opt.id} key={opt.id}>
+                          {opt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormControl></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <Button
             type="submit"
             disabled={

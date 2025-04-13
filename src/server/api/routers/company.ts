@@ -6,7 +6,6 @@ import {
   companyWorkerSubTypes,
   companyWorkerTypes,
   ROLE_VALUES,
-  roleEnum,
   users,
 } from "@/server/db/schema";
 import { eq } from "drizzle-orm";
@@ -153,4 +152,140 @@ export const companyRouter = createTRPCRouter({
 
       return res[0];
     }),
+  getConfigurations: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.db.transaction(async (tx) => {
+      const user = await tx.query.users.findFirst({
+        where: eq(users.id, ctx.auth.userId),
+      });
+
+      if (!user?.companyId) {
+        throw new Error("User does not belong to a company");
+      }
+
+      const company = await tx.query.companies.findFirst({
+        where: eq(companies.id, user.companyId),
+        with: {
+          locations: true,
+          requisitionReasons: true,
+          workerTypes: true,
+          workerSubTypes: true,
+        },
+      });
+
+      if (!company) {
+        throw new Error("Company not found");
+      }
+
+      return company;
+    });
+  }),
+  updateConfigurations: protectedProcedure
+    .input(
+      z.object({
+        locations: z
+          .array(
+            z.object({
+              value: z.string(),
+            }),
+          )
+          .optional(),
+        requisitionReasons: z
+          .array(
+            z.object({
+              value: z.string(),
+            }),
+          )
+          .optional(),
+        workerTypes: z
+          .array(
+            z.object({
+              value: z.string(),
+            }),
+          )
+          .optional(),
+        workerSubTypes: z
+          .array(
+            z.object({
+              value: z.string(),
+            }),
+          )
+          .optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        const user = await tx.query.users.findFirst({
+          where: eq(users.id, ctx.auth.userId),
+        });
+
+        if (!user?.companyId) {
+          throw new Error("User does not belong to a company");
+        }
+
+        const company = await tx.query.companies.findFirst({
+          where: eq(companies.id, user.companyId),
+        });
+
+        if (!company) {
+          throw new Error("Company not found");
+        }
+
+        const existingLocations = await tx.query.companyLocations.findMany({
+          where: eq(companyLocations.companyId, company.id),
+        });
+
+        const {
+          itemsToAdd: locationsToAdd,
+          itemsToDelete: locationIdsToDelete,
+        } = analyzeConfigItems(existingLocations, input.locations);
+
+        if (locationsToAdd.length > 0) {
+          await tx.insert(companyLocations).values(
+            locationsToAdd.map((name) => ({
+              name,
+              companyId: company.id,
+            })),
+          );
+        }
+
+        for (const id of locationIdsToDelete) {
+          await tx
+            .update(companyLocations)
+            .set({ isActive: false, deletedAt: new Date() })
+            .where(eq(companyLocations.id, id));
+        }
+
+        return { success: true };
+      });
+    }),
 });
+
+/**
+ * Analyzes configuration items and determines which ones need to be added or deleted
+ * @returns An object with items to add and IDs to delete
+ */
+function analyzeConfigItems(
+  existingItems: Array<{ id: string; name: string; isActive: boolean }>,
+  newItems: Array<{ value: string }>,
+) {
+  // Identify items to add (those not found in existing items)
+  const itemsToAdd = newItems
+    .map((item) => item.value)
+    .filter(
+      (value) => !existingItems.some((existing) => existing.name === value),
+    );
+
+  // Identify items to delete (existing active items not in the new list)
+  const valuesToKeep = newItems.map((item) => item.value);
+
+  const itemsToDelete = existingItems
+    .filter(
+      (existing) => existing.isActive && !valuesToKeep.includes(existing.name),
+    )
+    .map((item) => item.id);
+
+  return {
+    itemsToAdd,
+    itemsToDelete,
+  };
+}

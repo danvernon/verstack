@@ -22,6 +22,15 @@ export const companies = pgTable(
   ],
 );
 
+export const companyRelations = relations(companies, ({ many }) => ({
+  members: many(companyMembers),
+  requisitions: many(requisitions),
+  workerTypes: many(companyWorkerTypes),
+  workerSubTypes: many(companyWorkerSubTypes),
+  requisitionReasons: many(companyRequisitionReasons),
+  locations: many(companyLocations),
+}));
+
 export const users = pgTable(
   "user",
   (d) => ({
@@ -325,4 +334,42 @@ export const companyLocations = pgTable(
     index("company_location_company_id_idx").on(t.companyId),
     uniqueIndex("company_location_company_name_idx").on(t.companyId, t.name),
   ],
+);
+
+export const companyLocationRelations = relations(
+  companyLocations,
+  ({ one }) => ({
+    company: one(companies, {
+      fields: [companyLocations.companyId],
+      references: [companies.id],
+    }),
+  }),
+);
+
+export const companyWorkerTypeRelations = relations(
+  companyWorkerTypes,
+  ({ one }) => ({
+    company: one(companies, {
+      fields: [companyWorkerTypes.companyId],
+      references: [companies.id],
+    }),
+  }),
+);
+export const companyWorkerSubTypeRelations = relations(
+  companyWorkerSubTypes,
+  ({ one }) => ({
+    company: one(companies, {
+      fields: [companyWorkerSubTypes.companyId],
+      references: [companies.id],
+    }),
+  }),
+);
+export const companyRequisitionReasonRelations = relations(
+  companyRequisitionReasons,
+  ({ one }) => ({
+    company: one(companies, {
+      fields: [companyRequisitionReasons.companyId],
+      references: [companies.id],
+    }),
+  }),
 );
