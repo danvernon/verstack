@@ -33,7 +33,8 @@ export const requisitionRouter = createTRPCRouter({
           .values({
             userId: ctx.auth.userId,
             companyId: user.companyId,
-            requisitionNumber,
+            requisitionNumber: requisitionNumber.toString(),
+            status: "DRAFT",
             ...input,
           })
           .returning();
