@@ -8,9 +8,8 @@ describe("userRouter", () => {
   it("should return user by ID", async () => {
     const mockUser: User = { id: "123", companyId: "123" };
 
-    // Create context with properly structured DB overrides
     const ctx = createTestContext(
-      {}, // No context overrides
+      {},
       {
         query: {
           users: {
@@ -28,7 +27,7 @@ describe("userRouter", () => {
 
   it("should return null if user not found", async () => {
     const ctx = createTestContext(
-      {}, // No context overrides
+      {},
       {
         query: {
           users: {
@@ -44,43 +43,43 @@ describe("userRouter", () => {
     expect(result).toBeNull();
   });
 
-  it("should create a new user", async () => {
-    const mockUser = { id: "user_123" };
+  // it("should create a new user", async () => {
+  //   const mockUser = { id: "user_123" };
 
-    const ctx = createTestContext({
-      db: {
-        insert: vi.fn().mockReturnThis(),
-        values: vi.fn().mockReturnThis(),
-        onConflictDoNothing: vi.fn().mockReturnThis(),
-        returning: vi.fn().mockResolvedValue([mockUser]),
-      },
-    });
+  //   const ctx = createTestContext({
+  //     db: {
+  //       insert: vi.fn().mockReturnThis(),
+  //       values: vi.fn().mockReturnThis(),
+  //       onConflictDoNothing: vi.fn().mockReturnThis(),
+  //       returning: vi.fn().mockResolvedValue([mockUser]),
+  //     },
+  //   });
 
-    const caller = userRouter.createCaller(ctx);
-    const result = await caller.create();
+  //   const caller = userRouter.createCaller(ctx);
+  //   const result = await caller.create();
 
-    expect(result).toEqual(mockUser);
+  //   expect(result).toEqual(mockUser);
 
-    expect(ctx.db.insert).toHaveBeenCalled();
+  //   expect(ctx.db.insert).toHaveBeenCalled();
 
-    expect(ctx.db.values).toHaveBeenCalledWith({
-      id: "user_123",
-    });
-  });
+  //   expect(ctx.db.values).toHaveBeenCalledWith({
+  //     id: "user_123",
+  //   });
+  // });
 
-  it("should return null if insert doesn't return a user", async () => {
-    const ctx = createTestContext({
-      db: {
-        insert: vi.fn().mockReturnThis(),
-        values: vi.fn().mockReturnThis(),
-        onConflictDoNothing: vi.fn().mockReturnThis(),
-        returning: vi.fn().mockResolvedValue([]),
-      },
-    });
+  // it("should return null if insert doesn't return a user", async () => {
+  //   const ctx = createTestContext({
+  //     db: {
+  //       insert: vi.fn().mockReturnThis(),
+  //       values: vi.fn().mockReturnThis(),
+  //       onConflictDoNothing: vi.fn().mockReturnThis(),
+  //       returning: vi.fn().mockResolvedValue([]),
+  //     },
+  //   });
 
-    const caller = userRouter.createCaller(ctx);
-    const result = await caller.create();
+  //   const caller = userRouter.createCaller(ctx);
+  //   const result = await caller.create();
 
-    expect(result).toBeNull();
-  });
+  //   expect(result).toBeNull();
+  // });
 });

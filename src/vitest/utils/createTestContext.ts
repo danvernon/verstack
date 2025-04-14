@@ -7,8 +7,15 @@ import { vi } from "vitest";
 
 type TestContext = Awaited<ReturnType<typeof createTRPCContext>>;
 
+// Define proper types for query builder overrides
+type QueryBuilderOverrides = Record<string, unknown>;
+type DbOverrides = {
+  query?: Record<string, QueryBuilderOverrides>;
+  [key: string]: unknown;
+};
+
 // Create a more complete mock of the users query builder
-const createMockUsersQueryBuilder = (overrides = {}) => {
+const createMockUsersQueryBuilder = (overrides: QueryBuilderOverrides = {}) => {
   const defaultMethods = {
     findFirst: vi.fn(),
     findMany: vi.fn(),
@@ -31,7 +38,6 @@ const createMockUsersQueryBuilder = (overrides = {}) => {
       return {};
     },
     // Add all other methods that the query builder has
-    // You might need to add more based on what you're using
   };
 
   return {
@@ -43,12 +49,12 @@ const createMockUsersQueryBuilder = (overrides = {}) => {
 /**
  * Mock implementation of Drizzle ORM for testing
  */
-export const createMockDb = (dbOverrides = {}) => {
+export const createMockDb = (dbOverrides: DbOverrides = {}) => {
   const defaultDb = {
     query: {
       users: createMockUsersQueryBuilder(),
     },
-    $client: {} as Sql<{}>,
+    $client: {} as Sql<Record<string, never>>,
     $transaction: vi.fn(),
     $executeRaw: vi.fn(),
     $queryRaw: vi.fn(),
@@ -80,7 +86,7 @@ export const createMockDb = (dbOverrides = {}) => {
   }
 
   return mergedDb as unknown as PostgresJsDatabase<typeof schema> & {
-    $client: Sql<{}>;
+    $client: Sql<Record<string, never>>;
   };
 };
 
@@ -89,7 +95,7 @@ export const createMockDb = (dbOverrides = {}) => {
  */
 export const createTestContext = (
   contextOverrides: Partial<TestContext> = {},
-  dbOverrides = {},
+  dbOverrides: DbOverrides = {},
 ): TestContext => {
   return {
     db: createMockDb(dbOverrides),

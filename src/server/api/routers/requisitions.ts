@@ -15,6 +15,7 @@ export const requisitionRouter = createTRPCRouter({
         subTypeId: z.string(),
         reasonId: z.string(),
         locationId: z.string(),
+        officeId: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {

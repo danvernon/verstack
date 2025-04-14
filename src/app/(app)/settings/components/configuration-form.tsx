@@ -48,6 +48,13 @@ const configurationFormSchema = z.object({
       }),
     )
     .optional(),
+  officeLocations: z
+    .array(
+      z.object({
+        value: z.string(),
+      }),
+    )
+    .optional(),
 });
 
 type ConfigurationFormValues = z.infer<typeof configurationFormSchema>;
@@ -75,6 +82,9 @@ export function ConfigurationForm() {
     workerSubTypes: company?.workerSubTypes?.map((subType) => ({
       value: subType.name,
     })),
+    officeLocations: company?.offices?.map((office) => ({
+      value: office.name,
+    })),
   };
 
   const form = useForm<ConfigurationFormValues>({
@@ -97,6 +107,9 @@ export function ConfigurationForm() {
         workerSubTypes: company.workerSubTypes?.map((subType) => ({
           value: subType.name,
         })),
+        officeLocations: company.offices?.map((office) => ({
+          value: office.name,
+        })),
       });
     }
   }, [company, form]);
@@ -118,6 +131,11 @@ export function ConfigurationForm() {
 
   const { fields: subTypeFields, append: appendSubType } = useFieldArray({
     name: "workerSubTypes",
+    control: form.control,
+  });
+
+  const { fields: officeFields, append: appendOffice } = useFieldArray({
+    name: "officeLocations",
     control: form.control,
   });
 
@@ -288,6 +306,44 @@ export function ConfigurationForm() {
             Add sub type
           </Button>
         </div>
+        <div className="max-w-sm space-y-1">
+          {officeFields.map((field, index) => (
+            <FormField
+              control={form.control}
+              key={field.id}
+              name={`officeLocations.${index}.value`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={cn(index !== 0 && "sr-only")}>
+                    Office location
+                  </FormLabel>
+                  <FormDescription className={cn(index !== 0 && "sr-only")}>
+                    Description TBA.
+                  </FormDescription>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={company?.offices?.some(
+                        (opt) => opt.name === field.value,
+                      )}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mt-2"
+            onClick={() => appendOffice({ value: "" })}
+          >
+            Add office
+          </Button>
+        </div>
+
         <Button type="submit">Update</Button>
       </form>
     </Form>

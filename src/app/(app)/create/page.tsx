@@ -45,6 +45,9 @@ const reqFormSchema = z.object({
   locationId: z.string().min(1, {
     message: "Location is required",
   }),
+  officeId: z.string().min(1, {
+    message: "Office is required",
+  }),
 });
 
 type RequisitionFormValues = z.infer<typeof reqFormSchema>;

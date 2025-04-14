@@ -31,6 +31,7 @@ export const companyRelations = relations(companies, ({ many }) => ({
   workerSubTypes: many(companyWorkerSubTypes),
   requisitionReasons: many(companyRequisitionReasons),
   locations: many(companyLocations),
+  offices: many(companyOffices),
 }));
 
 export const users = pgTable(
@@ -190,6 +191,10 @@ export const requisitions = pgTable(
       .uuid()
       .notNull()
       .references(() => companyLocations.id, { onDelete: "restrict" }),
+    officeId: d
+      .uuid()
+      .notNull()
+      .references(() => companyOffices.id, { onDelete: "restrict" }),
     description: d.text(),
     status: requisitionStatusEnum("DRAFT").notNull(),
     deletedAt: d.timestamp({ withTimezone: true }),
@@ -235,6 +240,10 @@ export const requisitionRelations = relations(requisitions, ({ one }) => ({
   location: one(companyLocations, {
     fields: [requisitions.locationId],
     references: [companyLocations.id],
+  }),
+  office: one(companyOffices, {
+    fields: [requisitions.locationId],
+    references: [companyOffices.id],
   }),
 }));
 
@@ -360,6 +369,32 @@ export const companyLocations = pgTable(
 
 export type Location = InferSelectModel<typeof companyLocations>;
 
+export const companyOffices = pgTable(
+  "company_office",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    companyId: d
+      .uuid()
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    name: d.varchar({ length: 100 }).notNull(),
+    description: d.varchar({ length: 256 }),
+    isActive: d.boolean().notNull().default(true),
+    deletedAt: d.timestamp({ withTimezone: true }),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("company_office_company_id_idx").on(t.companyId),
+    uniqueIndex("company_office_company_name_idx").on(t.companyId, t.name),
+  ],
+);
+
+export type Office = InferSelectModel<typeof companyOffices>;
+
 export const companyLocationRelations = relations(
   companyLocations,
   ({ one }) => ({
@@ -397,3 +432,9 @@ export const companyRequisitionReasonRelations = relations(
     }),
   }),
 );
+export const companyOfficeRelations = relations(companyOffices, ({ one }) => ({
+  company: one(companies, {
+    fields: [companyOffices.companyId],
+    references: [companies.id],
+  }),
+}));

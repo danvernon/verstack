@@ -2,6 +2,7 @@ import {
   companies,
   companyLocations,
   companyMembers,
+  companyOffices,
   companyRequisitionReasons,
   companyWorkerSubTypes,
   companyWorkerTypes,
@@ -99,6 +100,15 @@ export const companyRouter = createTRPCRouter({
           })),
         );
 
+        const defaultOffices = ["London"];
+
+        await tx.insert(companyOffices).values(
+          defaultOffices.map((name) => ({
+            companyId: company[0].id,
+            name,
+          })),
+        );
+
         await tx
           .update(users)
           .set({
@@ -145,6 +155,7 @@ export const companyRouter = createTRPCRouter({
           requisitionReasons: true,
           workerTypes: true,
           workerSubTypes: true,
+          offices: true,
         },
       });
 
@@ -180,6 +191,13 @@ export const companyRouter = createTRPCRouter({
           )
           .optional(),
         workerSubTypes: z
+          .array(
+            z.object({
+              value: z.string(),
+            }),
+          )
+          .optional(),
+        officeLocations: z
           .array(
             z.object({
               value: z.string(),
@@ -287,7 +305,6 @@ export const companyRouter = createTRPCRouter({
           }
         }
 
-        // Add handling for workerSubTypes
         if (input.workerSubTypes) {
           const existingWorkerSubTypes =
             await tx.query.companyWorkerSubTypes.findMany({
@@ -313,6 +330,33 @@ export const companyRouter = createTRPCRouter({
               .update(companyWorkerSubTypes)
               .set({ isActive: false, deletedAt: new Date() })
               .where(eq(companyWorkerSubTypes.id, id));
+          }
+        }
+
+        if (input.officeLocations) {
+          const existing = await tx.query.companyOffices.findMany({
+            where: eq(companyOffices.companyId, company.id),
+          });
+
+          const { itemsToAdd, itemsToDelete } = analyzeConfigItems(
+            existing,
+            input.officeLocations,
+          );
+
+          if (itemsToAdd.length > 0) {
+            await tx.insert(companyOffices).values(
+              itemsToAdd.map((name) => ({
+                name,
+                companyId: company.id,
+              })),
+            );
+          }
+
+          for (const id of itemsToDelete) {
+            await tx
+              .update(companyOffices)
+              .set({ isActive: false, deletedAt: new Date() })
+              .where(eq(companyOffices.id, id));
           }
         }
 
