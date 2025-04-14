@@ -91,6 +91,10 @@ export default async function ViewSingle({
           <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
             {requisition?.workerType.name}
           </span>
+
+          <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+            {requisition?.office.name}
+          </span>
           <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">
             {requisition?.location.name}
           </span>

@@ -69,6 +69,7 @@ export const requisitionRouter = createTRPCRouter({
       with: {
         workerType: true,
         location: true,
+        office: true,
       },
     });
 
@@ -84,6 +85,7 @@ export const requisitionRouter = createTRPCRouter({
           workerSubType: true,
           reason: true,
           location: true,
+          office: true,
         },
       });
 

@@ -231,6 +231,34 @@ export default function CreateForm() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="officeId"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Office</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select an office" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {company?.offices.map((opt) => (
+                        <SelectItem value={opt.id} key={opt.id}>
+                          {opt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormControl></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <Button
             type="submit"

@@ -242,7 +242,7 @@ export const requisitionRelations = relations(requisitions, ({ one }) => ({
     references: [companyLocations.id],
   }),
   office: one(companyOffices, {
-    fields: [requisitions.locationId],
+    fields: [requisitions.officeId],
     references: [companyOffices.id],
   }),
 }));
@@ -254,6 +254,7 @@ export type RequisitionWithPartialRelations = Requisition & {
   workerSubType?: WorkerSubType;
   reason?: RequisitionReason;
   location?: Location;
+  office?: Office;
 };
 
 // Company worker types

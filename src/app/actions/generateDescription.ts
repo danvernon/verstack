@@ -28,6 +28,7 @@ export async function generateJobDescription(
             Subtype: ${jobData.workerSubType?.name}
             Reason: ${jobData.reason?.name}
             Location: ${jobData.location?.name}
+            Office: ${jobData.office?.name}
 
             Please provide:
             1. Essential technical skills (5-7)

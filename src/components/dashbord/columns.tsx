@@ -76,15 +76,22 @@ export const columns: ColumnDef<RequisitionWithPartialRelations>[] = [
       );
     },
   },
+
   {
     accessorKey: "location",
     header: "Location",
     cell: ({ row }) => {
+      const office = row.original.office?.name;
       const location = row.original.location?.name;
       return (
-        <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-          {location}
-        </span>
+        <div className="flex gap-2">
+          <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+            {office}
+          </span>
+          <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+            {location}
+          </span>
+        </div>
       );
     },
   },
