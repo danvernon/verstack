@@ -80,7 +80,9 @@ export default async function ViewSingle({
     <div className="flex w-full flex-col items-center justify-center p-6">
       {/* Display basic job info immediately */}
       <div className="mb-8 w-full max-w-3xl">
-        <h1 className="mb-2 text-3xl font-bold">{requisition?.title}</h1>
+        <h1 className="mb-2 text-3xl font-bold">
+          #{requisition?.requisitionNumber} - {requisition?.title}
+        </h1>
         <div className="mb-6 flex flex-wrap gap-3">
           <span className="rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
             Draft

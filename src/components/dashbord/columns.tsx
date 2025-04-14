@@ -38,6 +38,10 @@ export const columns: ColumnDef<RequisitionWithPartialRelations>[] = [
     ),
   },
   {
+    accessorKey: "requisitionNumber",
+    header: "#",
+  },
+  {
     accessorKey: "title",
     header: "Title",
   },

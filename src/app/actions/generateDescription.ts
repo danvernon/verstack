@@ -35,6 +35,7 @@ export async function generateJobDescription(
             2. Preferred qualifications (3-5)
             3. Required education/certifications
             4. Recommended years of experience
+            5. Provide a salary expectation range based on location, seniority, and job title
             
             Format your response using markdown with headers, bullet points, and appropriate styling.
           `,
