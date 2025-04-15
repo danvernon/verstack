@@ -1,0 +1,52 @@
+name: Database Schema Checks
+
+on:
+  push:
+    paths:
+      - "src/server/db/**"
+      - "drizzle/**"
+    branches: [main, master]
+  pull_request:
+    paths:
+      - "src/server/db/**"
+      - "drizzle/**"
+    branches: [main, master]
+
+jobs:
+  db-schema-check:
+    name: Database Schema Validation
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: verstack_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run database schema checks
+        env:
+          # Use the database connection format specific to your project
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/verstack_test"
+        run: npm run db:push -- --strict
