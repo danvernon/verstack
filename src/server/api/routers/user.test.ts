@@ -45,13 +45,12 @@ describe("userRouter", () => {
     expect(result).toBeNull();
   });
 
-  // Example usage:
   it("should create a new user", async () => {
     const mockUser = createMockUser();
     const mocks = createInsertMocks([mockUser]);
 
     const ctx = createTestContext(
-      {}, // contextOverrides
+      {},
       {
         insert: mocks.insert,
       },
