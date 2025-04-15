@@ -1,17 +1,19 @@
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
+// For client tests
 export default defineConfig({
-  test: {
-    globals: true,
-    environment: "jsdom",
-    environmentMatchGlobs: [
-      // For React component tests, use jsdom
-      ["**/*.{test,spec}.tsx", "jsdom"],
-    ],
-    include: ["**/*.test.tsx"],
-    setupFiles: "./src/vitest/setup.ts",
-  },
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   plugins: [tsconfigPaths()],
+  test: {
+    environment: "jsdom",
+    globals: true,
+    include: ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/.{idea,git,cache,output,temp}/**",
+      "**/server/**/*.test.{ts,tsx}", // Exclude server tests
+      "**/server/**/*.spec.{ts,tsx}",
+    ],
+  },
 });
