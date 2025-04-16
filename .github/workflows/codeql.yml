@@ -48,8 +48,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      # Check and remove conflicting config
+      - name: Check for workspace config
+        run: |
+          if [ -f "pnpm-workspace.yaml" ]; then
+            echo "Found pnpm-workspace.yaml - removing it as this is not a monorepo"
+            rm pnpm-workspace.yaml
+          fi
+
+          # Check if package.json has workspaces field
+          if grep -q '"workspaces"' package.json; then
+            echo "Warning: Your package.json contains a workspaces field, but you said this is not a monorepo."
+            echo "You may need to remove this field locally and update your lock file."
+          fi
+
+      # Install dependencies using standard mode
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
