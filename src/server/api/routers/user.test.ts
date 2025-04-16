@@ -1,5 +1,7 @@
 import { type User } from "@/server/db/schema";
 import { createTestContext } from "@/vitest/utils/createTestContext";
+import { createMockUser } from "@/vitest/utils/mocks/data/createMockUser";
+import { createInsertMocks } from "@/vitest/utils/mocks/functions/createInsertMocks";
 import { describe, expect, it, vi } from "vitest";
 
 import { userRouter } from "./user";
@@ -43,43 +45,40 @@ describe("userRouter", () => {
     expect(result).toBeNull();
   });
 
-  // it("should create a new user", async () => {
-  //   const mockUser = { id: "user_123" };
+  it("should create a new user", async () => {
+    const mockUser = createMockUser();
+    const mocks = createInsertMocks([mockUser]);
 
-  //   const ctx = createTestContext({
-  //     db: {
-  //       insert: vi.fn().mockReturnThis(),
-  //       values: vi.fn().mockReturnThis(),
-  //       onConflictDoNothing: vi.fn().mockReturnThis(),
-  //       returning: vi.fn().mockResolvedValue([mockUser]),
-  //     },
-  //   });
+    const ctx = createTestContext(
+      {},
+      {
+        insert: mocks.insert,
+      },
+    );
 
-  //   const caller = userRouter.createCaller(ctx);
-  //   const result = await caller.create();
+    const caller = userRouter.createCaller(ctx);
+    const result = await caller.create();
 
-  //   expect(result).toEqual(mockUser);
+    expect(result).toEqual(mockUser);
+    expect(mocks.insert).toHaveBeenCalled();
+    expect(mocks.values).toHaveBeenCalledWith({
+      id: "user_123",
+    });
+  });
 
-  //   expect(ctx.db.insert).toHaveBeenCalled();
+  it("should return null if insert doesn't return a user", async () => {
+    const mocks = createInsertMocks();
 
-  //   expect(ctx.db.values).toHaveBeenCalledWith({
-  //     id: "user_123",
-  //   });
-  // });
+    const ctx = createTestContext(
+      {},
+      {
+        insert: mocks.insert,
+      },
+    );
 
-  // it("should return null if insert doesn't return a user", async () => {
-  //   const ctx = createTestContext({
-  //     db: {
-  //       insert: vi.fn().mockReturnThis(),
-  //       values: vi.fn().mockReturnThis(),
-  //       onConflictDoNothing: vi.fn().mockReturnThis(),
-  //       returning: vi.fn().mockResolvedValue([]),
-  //     },
-  //   });
+    const caller = userRouter.createCaller(ctx);
+    const result = await caller.create();
 
-  //   const caller = userRouter.createCaller(ctx);
-  //   const result = await caller.create();
-
-  //   expect(result).toBeNull();
-  // });
+    expect(result).toBeNull();
+  });
 });

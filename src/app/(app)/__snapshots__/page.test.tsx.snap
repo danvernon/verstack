@@ -1,0 +1,47 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Home > renders CreateCompany if no company exists 1`] = `
+<div
+  className="flex w-full justify-center"
+>
+  <default />
+</div>
+`;
+
+exports[`Home > renders Dashboard if a company exists 1`] = `
+<div
+  className="flex w-full justify-center"
+>
+  <div
+    className="rounded-lg bg-red-50 p-6 text-red-800"
+  >
+    <h2
+      className="text-lg font-semibold"
+    >
+      Something went wrong
+    </h2>
+    <p>
+      We're having trouble loading your data. Please try again later.
+    </p>
+  </div>
+</div>
+`;
+
+exports[`Home > renders error message if an exception occurs 1`] = `
+<div
+  className="flex w-full justify-center"
+>
+  <div
+    className="rounded-lg bg-red-50 p-6 text-red-800"
+  >
+    <h2
+      className="text-lg font-semibold"
+    >
+      Something went wrong
+    </h2>
+    <p>
+      We're having trouble loading your data. Please try again later.
+    </p>
+  </div>
+</div>
+`;

@@ -1,17 +1,42 @@
+import { resolve } from "path";
+import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  plugins: [react(), tsconfigPaths()],
   test: {
-    globals: true,
     environment: "jsdom",
-    environmentMatchGlobs: [
-      // For React component tests, use jsdom
-      ["**/*.{test,spec}.tsx", "jsdom"],
+    globals: true,
+    setupFiles: [
+      "./src/vitest/setup-tests.tsx",
+      "./src/vitest/setup-react.tsx",
     ],
-    include: ["**/*.test.tsx"],
-    setupFiles: "./src/vitest/setup.ts",
+    include: ["**/*.test.{ts,tsx}"],
+    exclude: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/.{idea,git,cache,output,temp}/**",
+      "**/server/**/*.test.{ts,tsx}", // Exclude server tests
+      "**/server/**/*.spec.{ts,tsx}",
+    ],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      exclude: [
+        "node_modules",
+        "dist",
+        ".next",
+        "public",
+        "**/*.d.ts",
+        "**/*.config.*",
+        "**/vitest/**.ts",
+      ],
+    },
   },
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  plugins: [tsconfigPaths()],
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "./src"),
+    },
+  },
 });
