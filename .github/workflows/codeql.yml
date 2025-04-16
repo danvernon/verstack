@@ -35,16 +35,34 @@ jobs:
           version: 8
           run_install: false
 
-      - name: Check pnpm configuration
+      - name: Get pnpm store directory
+        shell: bash
         run: |
-          # Create a temporary minimal pnpm-workspace.yaml if it doesn't exist
-          if [ ! -f "pnpm-workspace.yaml" ]; then
-            echo "Creating temporary pnpm-workspace.yaml"
-            echo "packages:" > pnpm-workspace.yaml
-            echo "  - '.'" >> pnpm-workspace.yaml
-          fi
-          cat pnpm-workspace.yaml
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # Check and remove conflicting config
+      - name: Check for workspace config
+        run: |
+          if [ -f "pnpm-workspace.yaml" ]; then
+            echo "Found pnpm-workspace.yaml - removing it as this is not a monorepo"
+            rm pnpm-workspace.yaml
+          fi
+
+          # Check if package.json has workspaces field
+          if grep -q '"workspaces"' package.json; then
+            echo "Warning: Your package.json contains a workspaces field, but you said this is not a monorepo."
+            echo "You may need to remove this field locally and update your lock file."
+          fi
+
+      # Install dependencies using standard mode
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
