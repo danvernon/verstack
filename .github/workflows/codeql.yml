@@ -35,29 +35,18 @@ jobs:
           version: 8
           run_install: false
 
-      - name: Get pnpm store directory
-        shell: bash
+      - name: Check pnpm configuration
         run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          # Create a temporary minimal pnpm-workspace.yaml if it doesn't exist
+          if [ ! -f "pnpm-workspace.yaml" ]; then
+            echo "Creating temporary pnpm-workspace.yaml"
+            echo "packages:" > pnpm-workspace.yaml
+            echo "  - '.'" >> pnpm-workspace.yaml
+          fi
+          cat pnpm-workspace.yaml
 
       - name: Install dependencies
-        run: |
-          # Check if this is a workspace by looking for pnpm-workspace.yaml
-          if [ -f "pnpm-workspace.yaml" ]; then
-            # Install dependencies in workspace mode
-            pnpm install --frozen-lockfile
-          else
-            # Install dependencies in regular mode with -w flag
-            pnpm install --frozen-lockfile -w
-          fi
+        run: pnpm install --no-frozen-lockfile
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
