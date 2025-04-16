@@ -2,6 +2,7 @@ import "./globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
+import { PostHogProvider } from "@/components/PostHogProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -30,9 +31,10 @@ export default function RootLayout({
     >
       <html lang="en" className={`${geist.variable} dark`}>
         <body>
-          {/* PHProvider */}
-          <TRPCReactProvider>{children}</TRPCReactProvider>
-          <Toaster />
+          <PostHogProvider>
+            <TRPCReactProvider>{children}</TRPCReactProvider>
+            <Toaster />
+          </PostHogProvider>
         </body>
       </html>
     </ClerkProvider>
