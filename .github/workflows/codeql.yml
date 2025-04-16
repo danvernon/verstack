@@ -49,7 +49,15 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          # Check if this is a workspace by looking for pnpm-workspace.yaml
+          if [ -f "pnpm-workspace.yaml" ]; then
+            # Install dependencies in workspace mode
+            pnpm install --frozen-lockfile
+          else
+            # Install dependencies in regular mode with -w flag
+            pnpm install --frozen-lockfile -w
+          fi
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
