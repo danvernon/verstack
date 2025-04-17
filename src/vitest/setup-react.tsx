@@ -11,6 +11,10 @@ vi.mock("react", async () => {
   };
 });
 
+vi.mock("@clerk/nextjs/server", () => ({
+  auth: vi.fn(),
+}));
+
 // Mock common Next.js components and utilities
 vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
