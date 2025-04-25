@@ -108,7 +108,7 @@ importers:
         specifier: ^3.4.5
         version: 3.4.5
       posthog-js:
-        specifier: ^1.236.6
+        specifier: ^1.236.1
         version: 1.236.6
       posthog-node:
         specifier: ^4.11.6
@@ -132,7 +132,7 @@ importers:
         specifier: ^7.5.0
         version: 7.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       recharts:
-        specifier: ^2.15.2
+        specifier: ^2.15.3
         version: 2.15.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       server-only:
         specifier: ^0.0.1
