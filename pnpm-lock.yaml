@@ -108,7 +108,7 @@ importers:
         specifier: ^3.4.5
         version: 3.4.5
       posthog-js:
-        specifier: ^1.236.6
+        specifier: ^1.236.1
         version: 1.236.6
       posthog-node:
         specifier: ^4.11.6
@@ -178,7 +178,7 @@ importers:
         specifier: ^7.6.13
         version: 7.6.13
       '@types/node':
-        specifier: ^20
+        specifier: ^20.17.31
         version: 20.17.31
       '@types/react':
         specifier: ^19
