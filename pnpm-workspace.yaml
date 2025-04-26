@@ -2,6 +2,7 @@ onlyBuiltDependencies:
   - '@sentry/cli'
   - better-sqlite3
   - core-js
+  - msw
 
 ignoredBuiltDependencies:
   - '@clerk/shared'
