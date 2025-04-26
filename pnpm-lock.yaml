@@ -60,16 +60,16 @@ importers:
         specifier: ^8.21.2
         version: 8.21.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@trpc/client':
-        specifier: ^11.1.1
+        specifier: ^11.0.2
         version: 11.1.1(@trpc/server@11.1.1(typescript@5.8.3))(typescript@5.8.3)
       '@trpc/react-query':
-        specifier: ^11.1.1
+        specifier: ^11.0.2
         version: 11.1.1(@tanstack/react-query@5.74.4(react@19.1.0))(@trpc/client@11.1.1(@trpc/server@11.1.1(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.1(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@trpc/server':
-        specifier: ^11.1.1
+        specifier: ^11.0.2
         version: 11.1.1(typescript@5.8.3)
       '@trpc/tanstack-react-query':
-        specifier: ^11.1.1
+        specifier: ^11.0.2
         version: 11.1.1(@tanstack/react-query@5.74.4(react@19.1.0))(@trpc/client@11.1.1(@trpc/server@11.1.1(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.1(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       better-sqlite3:
         specifier: ^11.9.1
@@ -109,7 +109,7 @@ importers:
         version: 3.4.5
       posthog-js:
         specifier: ^1.236.1
-        version: 1.236.6
+        version: 1.236.7
       posthog-node:
         specifier: ^4.11.6
         version: 4.14.0
@@ -123,7 +123,7 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(react@19.1.0)
       react-hook-form:
-        specifier: ^7.55.0
+        specifier: ^7.56.1
         version: 7.56.1(react@19.1.0)
       react-markdown:
         specifier: ^10.1.0
@@ -199,7 +199,7 @@ importers:
         specifier: ^0.31.0
         version: 0.31.0
       eslint:
-        specifier: ^9.25.1
+        specifier: ^9
         version: 9.25.1(jiti@2.4.2)
       eslint-config-next:
         specifier: 15.3.1
@@ -4604,8 +4604,8 @@ packages:
     resolution: {integrity: sha512-cDWgoah1Gez9rN3H4165peY9qfpEo+SA61oQv65O3cRUE1pOEoJWwddwcqKE8XZYjbblOJlYDlLV4h67HrEVDg==}
     engines: {node: '>=12'}
 
-  posthog-js@1.236.6:
-    resolution: {integrity: sha512-IX4fkn3HCK+ObdHr/AuWd+Ks7bgMpRpOQB93b5rDJAWkG4if4xFVUn5pgEjyCNeOO2GM1ECnp08q9tYNYEfwbA==}
+  posthog-js@1.236.7:
+    resolution: {integrity: sha512-HatTinqAt/6aAraCgbnP+2MTeVTChdf6TDsQkef4/yUnXeA4tsHmXnGGJ3vnzQk7N//R6lIHN189BZDO9kuKAg==}
     peerDependencies:
       '@rrweb/types': 2.0.0-alpha.17
       rrweb-snapshot: 2.0.0-alpha.17
@@ -10172,7 +10172,7 @@ snapshots:
 
   postgres@3.4.5: {}
 
-  posthog-js@1.236.6:
+  posthog-js@1.236.7:
     dependencies:
       core-js: 3.41.0
       fflate: 0.4.8
