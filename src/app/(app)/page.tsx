@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import CreateCompany from "@/components/company/create-company";
-import { Dashboard } from "@/components/dashbord/dashboard";
+import { Dashboard } from "@/components/dashboard/dashboard";
 import { api, HydrateClient } from "@/trpc/server";
 import { auth } from "@clerk/nextjs/server";
 

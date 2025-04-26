@@ -2,7 +2,7 @@ import type { RequisitionWithPartialRelations } from "@/server/db/schema";
 import { Suspense } from "react";
 import { generateJobDescription } from "@/app/actions/generateDescription";
 import { MarkdownComponents } from "@/components/markdown-components";
-import { JobDescriptionSkeleton } from "@/components/view/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/trpc/server";
 import ReactMarkdown from "react-markdown";
 
@@ -111,7 +111,19 @@ export default async function ViewSingle({
           <DisplayJobDescription description={requisition.description} />
         ) : (
           // Generate a new description
-          <Suspense fallback={<JobDescriptionSkeleton />}>
+          <Suspense
+            fallback={
+              <div className="w-full space-y-4">
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-6 w-2/3" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            }
+          >
             <GenerateAndSaveJobDescription jobData={requisition} />
           </Suspense>
         )}
