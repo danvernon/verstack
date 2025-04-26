@@ -123,13 +123,13 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0(react@19.1.0)
       react-hook-form:
-        specifier: ^7.56.1
+        specifier: ^7.55.0
         version: 7.56.1(react@19.1.0)
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.1.2)(react@19.1.0)
       react-router:
-        specifier: ^7.5.0
+        specifier: ^7.5.2
         version: 7.5.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       recharts:
         specifier: ^2.15.2
