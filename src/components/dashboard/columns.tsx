@@ -40,10 +40,29 @@ export const columns: ColumnDef<RequisitionWithPartialRelations>[] = [
   {
     accessorKey: "requisitionNumber",
     header: "#",
+    cell: ({ row }) => {
+      const requisition = row.original;
+      return (
+        <Link
+          href={`/view/${requisition.id}`}
+          className="text-sm font-medium text-zinc-800 hover:underline dark:text-zinc-200"
+        >
+          {requisition.requisitionNumber}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "title",
     header: "Title",
+    cell: ({ row }) => {
+      const requisition = row.original;
+      return (
+        <div>
+          {requisition.title} ({requisition.level})
+        </div>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -56,18 +75,18 @@ export const columns: ColumnDef<RequisitionWithPartialRelations>[] = [
       );
     },
   },
-  {
-    accessorKey: "level",
-    header: "Level",
-    cell: ({ row }) => {
-      const level = row.original.level;
-      return (
-        <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-          {level}
-        </span>
-      );
-    },
-  },
+  // {
+  //   accessorKey: "level",
+  //   header: "Level",
+  //   cell: ({ row }) => {
+  //     const level = row.original.level;
+  //     return (
+  //       <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+  //         {level}
+  //       </span>
+  //     );
+  //   },
+  // },
   {
     accessorKey: "type",
     header: "Type",

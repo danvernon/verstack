@@ -43,10 +43,10 @@ const reqFormSchema = z.object({
     message: "Reason is required",
   }),
   locationId: z.string().min(1, {
-    message: "Location is required",
+    message: "Workplace is required",
   }),
   officeId: z.string().min(1, {
-    message: "Office is required",
+    message: "Office location is required",
   }),
 });
 
@@ -154,14 +154,14 @@ export default function CreateForm() {
               name="subTypeId"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel>Position type</FormLabel>
+                  <FormLabel>Employment type</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a position type" />
+                        <SelectValue placeholder="Select an employment type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -208,14 +208,14 @@ export default function CreateForm() {
               name="locationId"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel>Location</FormLabel>
+                  <FormLabel>Workplace</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a location" />
+                        <SelectValue placeholder="Select a workplace" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -236,14 +236,14 @@ export default function CreateForm() {
               name="officeId"
               render={({ field }) => (
                 <FormItem className="space-y-3">
-                  <FormLabel>Office</FormLabel>
+                  <FormLabel>Office Location</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select an office" />
+                        <SelectValue placeholder="Select an office location" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
