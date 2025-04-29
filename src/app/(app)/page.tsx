@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import CreateCompany from "@/components/company/create-company";
 import { Dashboard } from "@/components/dashboard/dashboard";
+import { Spinner } from "@/components/spinner";
 import { api, HydrateClient } from "@/trpc/server";
 import { auth } from "@clerk/nextjs/server";
 
@@ -30,7 +31,13 @@ export default async function Home() {
     }
 
     return (
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense
+        fallback={
+          <div className="flex w-full justify-center">
+            <Spinner size="lg" />
+          </div>
+        }
+      >
         <HydrateClient>
           <Dashboard />
         </HydrateClient>

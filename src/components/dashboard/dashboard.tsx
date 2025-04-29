@@ -15,11 +15,6 @@ export async function Dashboard() {
         <CardContent>
           <DataTable columns={columns} data={jobs} />
         </CardContent>
-        {/* <CardFooter>
-          <div className="text-muted-foreground text-xs">
-            Showing <strong>1-10</strong> of <strong>32</strong> products
-          </div>
-        </CardFooter> */}
       </Card>
     </>
   );
