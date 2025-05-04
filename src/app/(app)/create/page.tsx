@@ -120,7 +120,7 @@ export default function CreateForm() {
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a job type" />
+                        <SelectValue placeholder="Select a job level" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
