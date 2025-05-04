@@ -30,7 +30,7 @@ const reqFormSchema = z.object({
   title: z.string().min(1, {
     message: "Title is required",
   }),
-  level: z.string().min(1, {
+  levelId: z.string().min(1, {
     message: "Level is required",
   }),
   typeId: z.string().min(1, {
@@ -54,7 +54,6 @@ type RequisitionFormValues = z.infer<typeof reqFormSchema>;
 
 const defaultValues: Partial<RequisitionFormValues> = {
   title: "",
-  level: "",
 };
 
 export default function CreateForm() {
@@ -108,20 +107,34 @@ export default function CreateForm() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="level"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Job level</FormLabel>
-                <FormControl>
-                  <Input placeholder="Grade 4, VP, etc" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
           <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="levelId"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Job level</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a job type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {company?.jobLevels.map((opt) => (
+                        <SelectItem value={opt.id} key={opt.id}>
+                          {opt.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="typeId"

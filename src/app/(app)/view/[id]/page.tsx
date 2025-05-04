@@ -88,7 +88,7 @@ export default async function ViewSingle({
             Draft
           </span>
           <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-            {requisition?.level}
+            {requisition?.level.name}
           </span>
           <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
             {requisition?.workerType.name}

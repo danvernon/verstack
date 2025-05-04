@@ -23,7 +23,7 @@ export async function generateJobDescription(
             Analyze this data about the job:
             Based on the following job title and industry, suggest the most relevant:
             Job title: ${jobData.title}
-            Seniority: ${jobData.level}
+            Seniority: ${jobData.level?.name}
             Employment type: ${jobData.workerType?.name}
             Subtype: ${jobData.workerSubType?.name}
             Reason: ${jobData.reason?.name}

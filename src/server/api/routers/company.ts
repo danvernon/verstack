@@ -6,6 +6,7 @@ import {
   companyRequisitionReasons,
   companyWorkerSubTypes,
   companyWorkerTypes,
+  jobLevels,
   ROLE_VALUES,
   users,
 } from "@/server/db/schema";
@@ -109,6 +110,23 @@ export const companyRouter = createTRPCRouter({
           })),
         );
 
+        const defaultJobLevels = [
+          "Associate",
+          "Senior Associate",
+          "Analyst",
+          "Senior Analyst",
+          "AVP",
+          "VP",
+          "SVP",
+        ];
+
+        await tx.insert(jobLevels).values(
+          defaultJobLevels.map((name) => ({
+            companyId: company[0].id,
+            name,
+          })),
+        );
+
         await tx
           .update(users)
           .set({
@@ -156,6 +174,7 @@ export const companyRouter = createTRPCRouter({
           workerTypes: true,
           workerSubTypes: true,
           offices: true,
+          jobLevels: true,
         },
       });
 

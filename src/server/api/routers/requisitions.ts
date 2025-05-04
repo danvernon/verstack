@@ -10,7 +10,7 @@ export const requisitionRouter = createTRPCRouter({
     .input(
       z.object({
         title: z.string(),
-        level: z.string(),
+        levelId: z.string(),
         typeId: z.string(),
         subTypeId: z.string(),
         reasonId: z.string(),
@@ -86,6 +86,7 @@ export const requisitionRouter = createTRPCRouter({
           reason: true,
           location: true,
           office: true,
+          level: true,
         },
       });
 

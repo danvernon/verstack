@@ -32,6 +32,7 @@ export const companyRelations = relations(companies, ({ many }) => ({
   requisitionReasons: many(companyRequisitionReasons),
   locations: many(companyLocations),
   offices: many(companyOffices),
+  jobLevels: many(jobLevels),
 }));
 
 export const users = pgTable(
@@ -174,7 +175,10 @@ export const requisitions = pgTable(
       .references(() => users.id, { onDelete: "restrict" }),
     requisitionNumber: d.varchar({ length: 20 }).notNull(),
     title: d.varchar({ length: 256 }).notNull(),
-    level: d.varchar({ length: 256 }).notNull(),
+    levelId: d
+      .uuid()
+      .notNull()
+      .references(() => jobLevels.id, { onDelete: "restrict" }),
     typeId: d
       .uuid()
       .notNull()
@@ -245,6 +249,10 @@ export const requisitionRelations = relations(requisitions, ({ one }) => ({
     fields: [requisitions.officeId],
     references: [companyOffices.id],
   }),
+  level: one(jobLevels, {
+    fields: [requisitions.levelId],
+    references: [jobLevels.id],
+  }),
 }));
 
 export type RequisitionWithPartialRelations = Requisition & {
@@ -255,6 +263,7 @@ export type RequisitionWithPartialRelations = Requisition & {
   reason?: RequisitionReason;
   location?: Location;
   office?: Office;
+  level?: JobLevel;
 };
 
 // Company worker types
@@ -396,6 +405,32 @@ export const companyOffices = pgTable(
 
 export type Office = InferSelectModel<typeof companyOffices>;
 
+export const jobLevels = pgTable(
+  "job_level",
+  (d) => ({
+    id: d.uuid().primaryKey().defaultRandom(),
+    companyId: d
+      .uuid()
+      .notNull()
+      .references(() => companies.id, { onDelete: "cascade" }),
+    name: d.varchar({ length: 100 }).notNull(),
+    description: d.varchar({ length: 256 }),
+    isActive: d.boolean().notNull().default(true),
+    deletedAt: d.timestamp({ withTimezone: true }),
+    createdAt: d
+      .timestamp({ withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("job_level_company_id_idx").on(t.companyId),
+    uniqueIndex("job_level_company_name_idx").on(t.companyId, t.name),
+  ],
+);
+
+export type JobLevel = InferSelectModel<typeof jobLevels>;
+
 export const companyLocationRelations = relations(
   companyLocations,
   ({ one }) => ({
@@ -436,6 +471,12 @@ export const companyRequisitionReasonRelations = relations(
 export const companyOfficeRelations = relations(companyOffices, ({ one }) => ({
   company: one(companies, {
     fields: [companyOffices.companyId],
+    references: [companies.id],
+  }),
+}));
+export const jobLevelRelations = relations(jobLevels, ({ one }) => ({
+  company: one(companies, {
+    fields: [jobLevels.companyId],
     references: [companies.id],
   }),
 }));
