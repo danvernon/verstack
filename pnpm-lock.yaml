@@ -16,7 +16,7 @@ importers:
         version: 2.2.40
       '@hookform/resolvers':
         specifier: ^5.0.1
-        version: 5.0.1(react-hook-form@7.56.1(react@19.1.0))
+        version: 5.0.1(react-hook-form@7.56.2(react@19.1.0))
       '@radix-ui/react-avatar':
         specifier: ^1.1.4
         version: 1.1.7(@types/react-dom@19.1.3(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -55,7 +55,7 @@ importers:
         version: 0.13.4(arktype@2.1.20)(typescript@5.8.3)(zod@3.24.3)
       '@tanstack/react-query':
         specifier: ^5.71.10
-        version: 5.75.1(react@19.1.0)
+        version: 5.75.2(react@19.1.0)
       '@tanstack/react-table':
         specifier: ^8.21.2
         version: 8.21.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -64,13 +64,13 @@ importers:
         version: 11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3)
       '@trpc/react-query':
         specifier: ^11.0.2
-        version: 11.1.2(@tanstack/react-query@5.75.1(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        version: 11.1.2(@tanstack/react-query@5.75.2(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       '@trpc/server':
         specifier: ^11.0.2
         version: 11.1.2(typescript@5.8.3)
       '@trpc/tanstack-react-query':
         specifier: ^11.0.2
-        version: 11.1.2(@tanstack/react-query@5.75.1(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
+        version: 11.1.2(@tanstack/react-query@5.75.2(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -102,10 +102,10 @@ importers:
         specifier: ^3.4.5
         version: 3.4.5
       posthog-js:
-        specifier: ^1.236.1
-        version: 1.239.0
+        specifier: ^1.239.1
+        version: 1.239.1
       posthog-node:
-        specifier: ^4.17.1
+        specifier: ^4.11.6
         version: 4.17.1
       react:
         specifier: ^19.0.0
@@ -115,7 +115,7 @@ importers:
         version: 19.1.0(react@19.1.0)
       react-hook-form:
         specifier: ^7.55.0
-        version: 7.56.1(react@19.1.0)
+        version: 7.56.2(react@19.1.0)
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.1.2)(react@19.1.0)
@@ -182,7 +182,7 @@ importers:
         version: 9.1.2
       drizzle-kit:
         specifier: ^0.31.0
-        version: 0.31.0
+        version: 0.31.1
       eslint:
         specifier: ^9
         version: 9.26.0(jiti@2.4.2)
@@ -2297,8 +2297,8 @@ packages:
   '@tanstack/query-core@5.75.0':
     resolution: {integrity: sha512-rk8KQuCdhoRkzjRVF3QxLgAfFUyS0k7+GCQjlGEpEGco+qazJ0eMH6aO1DjDjibH7/ik383nnztua3BG+lOnwg==}
 
-  '@tanstack/react-query@5.75.1':
-    resolution: {integrity: sha512-tN+gG+eXCHYm+VpmdXUP1rfE9LUrRzgYozTkBZtJV1/WFM3vwWNKQC8G6b2RKcs+2cPg+hdToZHZfjL3bF4yIQ==}
+  '@tanstack/react-query@5.75.2':
+    resolution: {integrity: sha512-8F8VOsWUfSkCFoi62O9HSZT9jDgg28Ln8Z2dYKfRo/O2A0sgvr0uxTuNoon3PPXoDuHofv5V3elBI1M2Gh1MPg==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -3318,8 +3318,8 @@ packages:
     resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
     engines: {node: '>=12'}
 
-  drizzle-kit@0.31.0:
-    resolution: {integrity: sha512-pcKVT+GbfPA+bUovPIilgVOoq+onNBo/YQBG86sf3/GFHkN6lRJPm1l7dKN0IMAk57RQoIm4GUllRrasLlcaSg==}
+  drizzle-kit@0.31.1:
+    resolution: {integrity: sha512-PUjYKWtzOzPtdtQlTHQG3qfv4Y0XT8+Eas6UbxCmxTj7qgMf+39dDujf1BP1I+qqZtw9uzwTh8jYtkMuCq+B0Q==}
     hasBin: true
 
   drizzle-orm@0.43.1:
@@ -4792,8 +4792,8 @@ packages:
     resolution: {integrity: sha512-cDWgoah1Gez9rN3H4165peY9qfpEo+SA61oQv65O3cRUE1pOEoJWwddwcqKE8XZYjbblOJlYDlLV4h67HrEVDg==}
     engines: {node: '>=12'}
 
-  posthog-js@1.239.0:
-    resolution: {integrity: sha512-d8WTXGHmVO1FQV7wvEIan/MlN+gzdR42GHVOSoP3jWH2eiyCHCK4tX48uLZfvaEabDfuJCExdlmelWuYPAjJFw==}
+  posthog-js@1.239.1:
+    resolution: {integrity: sha512-4cN3A02e9uyyTVQ/9+bGVfvoAmpM1mlVXlq2DsujCQjloMMSbEb+6Uwv6fro3Q5qk7NEU62kQqZHyvqQIqv9zA==}
     peerDependencies:
       '@rrweb/types': 2.0.0-alpha.17
       rrweb-snapshot: 2.0.0-alpha.17
@@ -4940,8 +4940,8 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
-  react-hook-form@7.56.1:
-    resolution: {integrity: sha512-qWAVokhSpshhcEuQDSANHx3jiAEFzu2HAaaQIzi/r9FNPm1ioAvuJSD4EuZzWd7Al7nTRKcKPnBKO7sRn+zavQ==}
+  react-hook-form@7.56.2:
+    resolution: {integrity: sha512-vpfuHuQMF/L6GpuQ4c3ZDo+pRYxIi40gQqsCmmfUBwm+oqvBhKhwghCuj2o00YCgSfU6bR9KC/xnQGWm3Gr08A==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -6456,10 +6456,10 @@ snapshots:
 
   '@floating-ui/utils@0.2.9': {}
 
-  '@hookform/resolvers@5.0.1(react-hook-form@7.56.1(react@19.1.0))':
+  '@hookform/resolvers@5.0.1(react-hook-form@7.56.2(react@19.1.0))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.56.1(react@19.1.0)
+      react-hook-form: 7.56.2(react@19.1.0)
 
   '@humanfs/core@0.19.1': {}
 
@@ -7786,7 +7786,7 @@ snapshots:
 
   '@tanstack/query-core@5.75.0': {}
 
-  '@tanstack/react-query@5.75.1(react@19.1.0)':
+  '@tanstack/react-query@5.75.2(react@19.1.0)':
     dependencies:
       '@tanstack/query-core': 5.75.0
       react: 19.1.0
@@ -7839,9 +7839,9 @@ snapshots:
       '@trpc/server': 11.1.2(typescript@5.8.3)
       typescript: 5.8.3
 
-  '@trpc/react-query@11.1.2(@tanstack/react-query@5.75.1(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
+  '@trpc/react-query@11.1.2(@tanstack/react-query@5.75.2(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
     dependencies:
-      '@tanstack/react-query': 5.75.1(react@19.1.0)
+      '@tanstack/react-query': 5.75.2(react@19.1.0)
       '@trpc/client': 11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3)
       '@trpc/server': 11.1.2(typescript@5.8.3)
       react: 19.1.0
@@ -7852,9 +7852,9 @@ snapshots:
     dependencies:
       typescript: 5.8.3
 
-  '@trpc/tanstack-react-query@11.1.2(@tanstack/react-query@5.75.1(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
+  '@trpc/tanstack-react-query@11.1.2(@tanstack/react-query@5.75.2(react@19.1.0))(@trpc/client@11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.1.2(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
     dependencies:
-      '@tanstack/react-query': 5.75.1(react@19.1.0)
+      '@tanstack/react-query': 5.75.2(react@19.1.0)
       '@trpc/client': 11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3)
       '@trpc/server': 11.1.2(typescript@5.8.3)
       react: 19.1.0
@@ -8938,7 +8938,7 @@ snapshots:
 
   dotenv@16.5.0: {}
 
-  drizzle-kit@0.31.0:
+  drizzle-kit@0.31.1:
     dependencies:
       '@drizzle-team/brocli': 0.10.2
       '@esbuild-kit/esm-loader': 2.6.5
@@ -10681,7 +10681,7 @@ snapshots:
 
   postgres@3.4.5: {}
 
-  posthog-js@1.239.0:
+  posthog-js@1.239.1:
     dependencies:
       core-js: 3.42.0
       fflate: 0.4.8
@@ -10791,7 +10791,7 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
-  react-hook-form@7.56.1(react@19.1.0):
+  react-hook-form@7.56.2(react@19.1.0):
     dependencies:
       react: 19.1.0
 
