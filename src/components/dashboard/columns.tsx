@@ -59,7 +59,7 @@ export const columns: ColumnDef<RequisitionWithPartialRelations>[] = [
       const requisition = row.original;
       return (
         <div>
-          {requisition.title} ({requisition.level})
+          {requisition.title} ({requisition.level?.name})
         </div>
       );
     },

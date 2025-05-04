@@ -13,7 +13,7 @@ export const createMockRequisition = (
   userId,
   requisitionNumber: `REQ-${id.split("_")[1]}`,
   title: `Requisition ${id.split("_")[1]}`,
-  level: "Senior",
+  levelId: "level_123",
   typeId: "type_123",
   subTypeId: "subtype_123",
   reasonId: "reason_123",
